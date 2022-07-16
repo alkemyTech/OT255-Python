@@ -13,7 +13,6 @@ case
 else split_part(nombre,'_', 2)
 end as second_name,
 	sexo as gender,
-	fecha_nacimiento,
 	(current_date - to_date(to_char(fecha_nacimiento :: DATE, 'yyyy-mm-dd'),'yyyy-mm-dd'))/365 as age, /* Convierto fecha_nacimiento -> a string con formato 'yyyy-mm-dd'-> a date con formato 'yyyy-mm-dd' */
 	/* codigo postal y localidad */
 	localidad.codigo_postal  as postal_code,
