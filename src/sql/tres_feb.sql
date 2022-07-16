@@ -11,10 +11,10 @@ CASE
 ELSE SPLIT_PART(ptdf.names::TEXT, '_', 2)
 END AS last_name,
   ptdf.sexo AS gender,
-  ptdf.birth_dates AS age,
+  DATE_PART ('year', CURRENT_DATE) - DATE_PART('year', TO_DATE (ptdf.birth_dates,'YY')) AS age,
   ptdf.codigo_postal AS postal_code,
+  l.localidad AS location,
   ptdf.correos_electronicos AS email,
-  l.localidad
 FROM
     public.palermo_tres_de_febrero ptdf LEFT JOIN public.localidad l
 ON CAST (ptdf.codigo_postal AS INTEGER) = l.codigo_postal
