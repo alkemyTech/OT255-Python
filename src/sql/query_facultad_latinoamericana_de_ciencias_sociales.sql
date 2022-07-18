@@ -1,4 +1,4 @@
-SELECT universities AS university,
+SELECT DISTINCT ON (emails, careers) universities AS university,
 careers AS career,
 to_date(inscription_dates, 'DD-MM-YYYY') as inscription_date,
 CASE
@@ -15,7 +15,7 @@ localidad.codigo_postal AS postal_code,
 locations AS location,
 emails AS email
 FROM lat_sociales_cine
-JOIN localidad 
-ON lat_sociales_cine.locations = localidad.localidad
+LEFT JOIN localidad
+ON lat_sociales_cine.locations=replace(localidad, ' ', '-')
 WHERE universities='-FACULTAD-LATINOAMERICANA-DE-CIENCIAS-SOCIALES'
-AND to_date(inscription_dates, 'DD-MM-YYYY') BETWEEN '01-09-2020' AND '01-02-2021'
+AND to_date(inscription_dates, 'DD-MM-YYYY') BETWEEN '2020-09-01' AND '2021-02-01'
