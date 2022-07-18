@@ -20,9 +20,10 @@ select
 	localidad.localidad as location,
 	correo_electronico as email
 from 
-	flores_comahue
-full outer join localidad
-on cast(flores_comahue.codigo_postal as int) = localidad.codigo_postal 
+	flores_comahue 
+/* Contiene todo lo de la tabla Izquierda (universidades) y se le agregan los matchs con la tabla de la derecha (localidad) */
+left join localidad
+on cast(flores_comahue.codigo_postal as int) = localidad.codigo_postal
 where 
 	universidad = 'UNIVERSIDAD DE FLORES'
 and 

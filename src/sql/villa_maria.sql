@@ -19,8 +19,9 @@ end as second_name,
 	replace(salvador_villa_maria.localidad, '_', ' ') as location,	
 	email
 from
-	salvador_villa_maria 
-full outer join localidad
+	salvador_villa_maria
+/* Contiene todo lo de la tabla Izquierda (universidades) y se le agregan los matchs con la tabla de la derecha (localidad) */ 
+left join localidad
 /* Intercambio los caracteres '_', ' ' para que las salvador_villa_maria.localidad se pueda comparar con localidad.codigo_postal */
 on replace(salvador_villa_maria.localidad, '_', ' ') = localidad.localidad
 where 
