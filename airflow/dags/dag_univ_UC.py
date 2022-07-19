@@ -26,8 +26,10 @@ logger.addHandler(file_handler)
 def _t_query_uc():
     pass
 
+
 def _t_process_uc():
     pass
+
 
 def _t_load_uc():
     pass
@@ -37,27 +39,23 @@ def _t_load_uc():
 # set up the DAG for the current university
 with DAG(
     "dag_univ_uc",
-    description = "This is the DAG for 'Universidad del Cine'",
-    start_date = datetime(2022, 1, 1),
-    schedule_interval = timedelta(hours=1),
-    catchup = False
+    description="This is the DAG for 'Universidad del Cine'",
+    start_date=datetime(2022, 1, 1),
+    schedule_interval=timedelta(hours=1),
+    catchup=False,
 ) as dag:
     # first task: run sql script and export query result to (.csv)?
     task_query_uc = PythonOperator(
-        task_id = "task_query_uc",
-        python_callable = _t_query_uc,
-        retries = 5,
-        retry_delay = timedelta(minutes=2)
-        )
+        task_id="task_query_uc",
+        python_callable=_t_query_uc,
+        retries=5,
+        retry_delay=timedelta(minutes=2),
+    )
     # second task: process raw data in pandas
     task_process_uc = PythonOperator(
-        task_id = "task_process_uc",
-        python_callable = _t_process_uc
-        )
+        task_id="task_process_uc", python_callable=_t_process_uc
+    )
     # third task: upload resulting object to amazon s3
-    task_load_uc = PythonOperator(
-        task_id = "task_load_uc",
-        python_callable = _t_load_uc
-        )
+    task_load_uc = PythonOperator(task_id="task_load_uc", python_callable=_t_load_uc)
 
 task_query_uc >> task_process_uc >> task_load_uc
