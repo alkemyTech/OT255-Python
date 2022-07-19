@@ -1,17 +1,17 @@
 from airflow import DAG
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.providers.postgres.operators.postgres import PostgresHook
-from airflow providers.amazon.aws.hooks.s3 import S3Hook
+from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.operators.python import PythonOperator
 
 from datetime import timedelta, datetime
 
 
-def data_transform()
+def data_transform():
     pass
 
-def hook_and_upload_to_s3()
-    hook = s3Hook(" ")      # [Connection_Id_name]
+def hook_and_upload_to_s3():
+    hook = S3Hook(" ")      # [Connection_Id_name]
     hook.load_file(" ")     # [file_name]
 
 with DAG(
@@ -41,4 +41,4 @@ with DAG(
         task_id = "hook_and_upload_to_s3"    
     )
 
-    tarea_1 >> tarea_2 >> tarea_3 >> tarea_4
+    task_1 >> task_2 >> task_3 >> task_4
