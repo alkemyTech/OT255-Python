@@ -1,9 +1,8 @@
+import logging
+from datetime import datetime, timedelta
+
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-
-from datetime import timedelta, datetime
-import logging
-
 
 # -- INITIAL CONFIG --
 # set up configuration for logging to a file and to the console
