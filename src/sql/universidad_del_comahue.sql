@@ -21,3 +21,4 @@ select * from localidad loc
 ) disloc
 on disloc.codigo_postal = cast(fc.codigo_postal as integer)
 where fc.universidad = 'UNIV. NACIONAL DEL COMAHUE'
+and fecha_de_inscripcion::date between '2020-09-01' and '2021-02-01'
