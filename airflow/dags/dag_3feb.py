@@ -24,13 +24,14 @@ with DAG(
     
     task_1 = PostgresHook (
         task_id = 'db_connect',
-        # postgress_conn_id = " "         # The postgress conn id reference to a specific postgres database
+        # postgress_conn_id = " ",         # The postgress conn id reference to a specific postgres database
+        retries = 5
     )
 
     task_2 = PostgresOperator(
         task_id = '3feb_data_consult',
         # postgres_conn_id = " ",         # [Connection_Id_name]
-        # sql = " "                       # [sql_consult_name_file.sql]
+        # sql = " ",                       # [sql_consult_name_file.sql]
     )
 
     task_3 = PythonOperator(

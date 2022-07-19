@@ -24,7 +24,9 @@ with DAG(
     
     task_1 = PostgresHook (
         task_id = 'db_connect',
-        # postgress_conn_id = " "         # The postgress conn id reference to a specific postgres database
+        # postgress_conn_id = " ",         # The postgress conn id reference to a specific postgres database
+        retries = 5,
+
     )
 
     task_2 = PostgresOperator(
