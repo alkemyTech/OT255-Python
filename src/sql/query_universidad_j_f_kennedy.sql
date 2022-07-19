@@ -1,7 +1,6 @@
-
 SELECT universidades AS university,
 carreras AS career,
-to_date(fechas_de_inscripcion, 'DD-Mon-YY') AS inscription_date,
+to_date(fechas_de_inscripcion, 'YY-Mon-DD') AS inscription_date,
 SPLIT_PART(nombres, '-', 1) AS first_name,
 SPLIT_PART(nombres, '-', 2) AS last_name,
 sexo AS gender,
