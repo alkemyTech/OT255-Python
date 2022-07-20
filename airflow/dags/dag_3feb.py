@@ -1,11 +1,23 @@
 from airflow import DAG
-from airflow.providers.postgres.operators.postgres import PostgresOperator
-from airflow.providers.postgres.operators.postgres import PostgresHook
+#from airflow.providers.postgres.operators.postgres import PostgresOperator
+#from airflow.providers.postgres.operators.postgres import PostgresHook
 from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.operators.python import PythonOperator
 
 from datetime import timedelta, datetime
+import logging
+
+
+logging.basicConfig(level=logging.INFO, 
+                    format = "%(asctime)s - %(name)s - %(message)s", 
+                    datefmt = '%Y-%m-%d')
+
+#Create custom logger, add console handler
+logger = logging.getLogger(__name__)
+console_handler = logging.StreamHandler()
+logger.addHandler(console_handler)
+
 
 def database_connect():
     pass
