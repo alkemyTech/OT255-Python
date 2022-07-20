@@ -1,4 +1,3 @@
-from tarfile import TarError
 from airflow import DAG
 from datetime import timedelta, datetime
 import logging
@@ -9,71 +8,68 @@ from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
 from airflow.operators.python import PythonOperator
 
+# Configuracion de los Logs
+# https://docs.python.org/3/library/logging.html#logrecord-attributes
 def conf_logs():
     logging.basicConfig(
-        format = '%(asctime)s - %(levelname)s - %(message)s', 
-        datefmt = '%Y-%m-%d', level =  logging.INFO
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d",
+        level=logging.INFO,
     )
+
 
 def conex_postgres():
     # Aca defino un PostgresHook para realizar la conexion
-    logging.info('Se ha realizado el enlace a Postgres.')
+    logging.info("Se ha realizado el enlace a Postgres.")
     # Aca realizo la Query con PostgresOperator
-    logging.info('Se ha realizado la consulta.')
+    logging.info("Se ha realizado la consulta.")
+
 
 def manip_pandas():
     # Aca hago todo el procesamiento de la data
-    logging.info('Se ha realizado el procesamiento de la informacion.')
+    logging.info("Se ha realizado el procesamiento de la informacion.")
+
 
 def upload_to_s3():
     # Primero establezco la conexion con S3Hook()
-    logging.info('Se ha realizado la conexion a S3.')
+    logging.info("Se ha realizado la conexion a S3.")
     # Luego, creo un bucket si no existe todavia con S3CreateBucketOperator
-    logging.info('Se ha creado el bucket')
+    logging.info("Se ha creado el bucket")
     # Por ultimo, subo el archivo a ese bucket
-    logging.info('Se subieron los archivos.')
-
+    logging.info("Se subieron los archivos.")
 
 
 # Configuracion de los Retries
 def_args = {
-    'owner': 'Lautaro Flores',
-    'retries': 5,
-    'retry_delay': timedelta(minutes = 1)
+    "owner": "Lautaro Flores",
+    "retries": 5,
+    "retry_delay": timedelta(minutes=1),
 }
 
-# Configuracion del DAG 
+# Configuracion del DAG
 with DAG(
-    'dag_flores_villamaria',
-    default_args = def_args,
-    description = 'DAG para las Universidad de Flores y Villa Maria.',
-    #Intervalo de ejecución del DAG.
-    schedule_interval = '0 * * * *',
-    start_date = datetime(2022, 7, 19)
+    "dag_villamaria",
+    default_args=def_args,
+    description="DAG para la Universidad de Villa Maria.",
+    # Intervalo de ejecución del DAG.
+    schedule_interval="0 * * * *",
+    start_date=datetime(2022, 7, 19),
 ) as dag:
     # Logs
 
-    loggs = PythonOperator(
-        task_id = 'loggs',
-        python_callable = conf_logs
-    )
+    loggs = PythonOperator(task_id="loggs", python_callable=conf_logs)
 
     # Conexion a la base de datos y extraccion de la data de la universidad
     conexion_postgres = PythonOperator(
-        task_id = 'conexion_postgres',
-        python_callable = conex_postgres
+        task_id="conexion_postgres", python_callable=conex_postgres
     )
 
     # Manipulacion de los datos con Pandas
     process_pandas = PythonOperator(
-        task_id = 'extract_pandas',
-        python_callable = manip_pandas
+        task_id="extract_pandas", python_callable=manip_pandas
     )
 
-    upload_s3 = PythonOperator(
-        task_id = 'upload_s3',
-        python_callable = upload_to_s3
-    )
+    upload_s3 = PythonOperator(task_id="upload_s3", python_callable=upload_to_s3)
 
     loggs >> conexion_postgres >> process_pandas >> upload_s3
 
