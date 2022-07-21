@@ -4,11 +4,6 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
-# from airflow.providers.amazon.aws.hooks.s3 import S3Hook
-# from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
-# from airflow.providers.postgres.hooks.postgres import PostgresHook
-# from airflow.providers.postgres.operators.postgres import PostgresOperator
-
 
 def conf_logs():
     logging.basicConfig(
