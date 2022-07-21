@@ -13,10 +13,12 @@ SELECT
   sexo as gender,
   AGE(TO_DATE(nacimiento,'DD-MM-YYYY')) as age,
   codgoposstal as postal_code,
-  direccion as location, 
+  l.localidad  as location, 
   eemail as email
 FROM
     public.moron_nacional_pampa mnp 
+left join localidad l on
+	cast(codgoposstal as int)  = l.codigo_postal 
 WHERE 
     universidad='Universidad de morón'
 AND TO_DATE(fechaiscripccion,'DD-MM-YYYY') BETWEEN '2020/09/01' AND '2021/02/01'

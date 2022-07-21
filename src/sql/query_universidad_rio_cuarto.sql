@@ -12,11 +12,23 @@ SELECT
   end as last_name,
   sexo as gender,
   AGE(TO_DATE(fechas_nacimiento,'YY-Mon-DD')) as age,
-  reverse(split_part(reverse(direcciones::text), '-', 1))  as postal_code,
-  direcciones as location, 
+  array_agg(l.codigo_postal)  as postal_code,
+  upper(replace(rci.localidad, '-', ' ')) as location, 
   email as email
 FROM
-    public.rio_cuarto_interamericana rci  
+    public.rio_cuarto_interamericana rci
+left join localidad l on
+	upper(replace(rci.localidad, '-', ' '))=l.localidad  
 WHERE 
     univiersities ='Universidad-nacional-de-río-cuarto'
 AND TO_DATE(inscription_dates ,'YY-Mon-DD') BETWEEN '2020-09-01' AND '2021-02-01'
+group by
+university,
+career,
+inscription_date,
+first_name,
+last_name,
+gender,
+age,
+location,
+email ;
