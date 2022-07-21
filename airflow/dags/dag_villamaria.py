@@ -1,15 +1,15 @@
-from airflow import DAG
-from datetime import timedelta, datetime
 import logging
+from datetime import datetime, timedelta
 
-from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.providers.postgres.operators.postgres import PostgresOperator
-from airflow.providers.amazon.aws.hooks.s3 import S3Hook
-from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
+from airflow import DAG
 from airflow.operators.python import PythonOperator
 
-# Configuracion de los Logs
-# https://docs.python.org/3/library/logging.html#logrecord-attributes
+# from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+# from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
+# from airflow.providers.postgres.hooks.postgres import PostgresHook
+# from airflow.providers.postgres.operators.postgres import PostgresOperator
+
+
 def conf_logs():
     logging.basicConfig(
         format="%(asctime)s - %(levelname)s - %(message)s",
@@ -19,24 +19,20 @@ def conf_logs():
 
 
 def conex_postgres():
-    # Aca defino un PostgresHook para realizar la conexion
-    logging.info("Se ha realizado el enlace a Postgres.")
     # Aca realizo la Query con PostgresOperator
-    logging.info("Se ha realizado la consulta.")
+    pass
 
 
 def manip_pandas():
-    # Aca hago todo el procesamiento de la data
-    logging.info("Se ha realizado el procesamiento de la informacion.")
+    # Aca hago todo el procesamiento de la data con PythonOperator
+    pass
 
 
 def upload_to_s3():
     # Primero establezco la conexion con S3Hook()
-    logging.info("Se ha realizado la conexion a S3.")
-    # Luego, creo un bucket si no existe todavia con S3CreateBucketOperator
-    logging.info("Se ha creado el bucket")
+    # Luego, creo un bucket, si no existe, con S3CreateBucketOperator
     # Por ultimo, subo el archivo a ese bucket
-    logging.info("Se subieron los archivos.")
+    pass
 
 
 # Configuracion de los Retries
@@ -72,29 +68,3 @@ with DAG(
     upload_s3 = PythonOperator(task_id="upload_s3", python_callable=upload_to_s3)
 
     loggs >> conexion_postgres >> process_pandas >> upload_s3
-
-    # Info Operators
-    """
-    - Para la conexion a Postgres
-    from airflow.providers.postgres.hooks.postgres import PostgresHook
-    https://airflow.apache.org/docs/apache-airflow-providers-postgres/stable/_api/airflow/providers/postgres/hooks/postgres/index.html
-
-    - Para la consulta SQL
-    from airflow.providers.postgres.operators.postgres import PostgresOperator
-    https://airflow.apache.org/docs/apache-airflow-providers-postgres/stable/_api/airflow/providers/postgres/operators/postgres/index.html
-    
-    - Para procesar los datos con Pandas
-    from airflow.operators.python import PythonOperator
-
-    - Para conectarse a S3 de Amazon
-    from airflow.providers.amazon.aws.hooks.s3 import S3Hook
-    https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/_api/airflow/providers/amazon/aws/hooks/s3/index.html
-    
-    - Para crear un Bucket en S3 (en caso de que no exista)
-    from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
-    https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/_api/airflow/providers/amazon/aws/operators/s3/index.html
-
-    - Para subir los datos al S3 - Existe un operator para este paso?
-    from airflow.operators.python import PythonOperator
-    Ejemplo de subida al S3 https://www.youtube.com/watch?v=Gios3wik22Y
-"""
