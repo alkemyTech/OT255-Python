@@ -1,8 +1,5 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.providers.amazon.aws.hooks.s3 import S3Hook
-from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
 from datetime import datetime, timedelta
 
 import logging
@@ -70,12 +67,8 @@ with DAG(
     transform = PythonOperator(
         task_id='transform', python_callable=transform_data)
 
-# Crear un bucket (si existe no lo crea)
-    crear_bucket = S3CreateBucketOperator(
-        task_id='crear_bucket', bucket_name='bucket_latinoamericana_kennedy')
-
 # Carga el archivo en el servidor s3
     load_to_s3 = PythonOperator(task_id='load_s3', python_callable=load_s3)
 
     log_inicio_dag >> [extraer_fac_latinoamericana,
-                       extraer_kennedy] >> transform >> crear_bucket >> load_to_s3
+                       extraer_kennedy] >> transform >> load_to_s3
