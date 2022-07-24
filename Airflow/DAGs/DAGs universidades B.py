@@ -1,12 +1,13 @@
 """DAG created for processing data from postgres using pandas and loading it to Amazon S3"""
-import airflow
 import logging
 from datetime import datetime
-from airflow.operators import python_operator
-from airflow.utils.task_group import TaskGroup
+
+import airflow
 from airflow.models import Variable
-from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.operators import python_operator
 from airflow.providers.amazon.aws.operators.s3 import S3CreateObjectOperator
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.utils.task_group import TaskGroup
 
 # Logger configuration
 logging.basicConfig(

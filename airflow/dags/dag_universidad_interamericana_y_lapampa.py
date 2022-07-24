@@ -1,13 +1,13 @@
 
-import airflow
-from datetime import datetime, timedelta
-from airflow.models import DAG
-from airflow.operators.python import PythonOperator
-from airflow.providers.postgres.operators.postgres import PostgresOperator
-from airflow.providers.amazon.aws.operators.s3 import S3CreateObjectOperator
-from airflow.utils.task_group import TaskGroup
-from airflow.models import Variable
 import logging
+from datetime import datetime, timedelta
+
+import airflow
+from airflow.models import DAG, Variable
+from airflow.operators.python import PythonOperator
+from airflow.providers.amazon.aws.operators.s3 import S3CreateObjectOperator
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.utils.task_group import TaskGroup
 
 postgres_conn_id = Variable.get('postgres_conn_id')
 s3_bucket = Variable.get('amazon_bucket')
