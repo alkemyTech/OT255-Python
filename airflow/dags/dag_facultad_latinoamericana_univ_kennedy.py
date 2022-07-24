@@ -12,9 +12,7 @@ logging.basicConfig(
 
 
 def extraer_latinoam():
-    logging.info(
-        "Extrayendo datos de la Facultad Latinoamericana de Ciencias Sociales"
-    )
+    logging.info("Extrayendo datos de la Facultad Latinoamericana de Ciencias Sociales")
     pass
 
 
@@ -34,9 +32,7 @@ def load_s3():
 
 
 def log_inicio():
-    logging.info(
-        "Iniciando el dag: dag_facultad_latinoamericana_universidad_kennedy"
-    )
+    logging.info("Iniciando el dag: dag_facultad_latinoamericana_universidad_kennedy")
 
 
 with DAG(
@@ -47,9 +43,7 @@ with DAG(
 ) as dag:
 
     # Log de inicio del DAG
-    log_inicio_dag = PythonOperator(
-        task_id="log_inicio", python_callable=log_inicio
-    )
+    log_inicio_dag = PythonOperator(task_id="log_inicio", python_callable=log_inicio)
 
     # Extraer la informacion de las dos universidades
     extraer_fac_latinoamericana = PythonOperator(
@@ -66,9 +60,7 @@ with DAG(
     )
 
     # Transformar la data usando pandas
-    transform = PythonOperator(
-        task_id="transform", python_callable=transform_data
-    )
+    transform = PythonOperator(task_id="transform", python_callable=transform_data)
 
     # Carga el archivo en el servidor s3
     load_to_s3 = PythonOperator(task_id="load_s3", python_callable=load_s3)
