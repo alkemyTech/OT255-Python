@@ -1,4 +1,5 @@
 .env
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 *.pyc
 src/.DS_Store
@@ -17,3 +18,6 @@ Airflow/DAGs/__pycache__/dag_villamaria.cpython-310.pyc
 Airflow/DAGs/__pycache__/DAGs universidades B.cpython-310.pyc
 src/.DS_Store
 >>>>>>> Stashed changes
+=======
+files
+>>>>>>> c9546c3 (UC-UBA create directory for functions)
