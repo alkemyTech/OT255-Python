@@ -1,26 +1,22 @@
 import logging
+import os
+import sys
 from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+FOLDER_DIR = os.path.dirname(SCRIPT_DIR)
+sys.path.append(os.path.dirname(FOLDER_DIR))
+
+from src.py_functions.extract_fac_latam_univ_jfk import extrac_fac_y_univ
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
     datefmt="%Y-%m-%d",
 )
-
-
-def extraer_latinoam():
-    logging.info(
-        "Extrayendo datos de la Facultad Latinoamericana de Ciencias Sociales"
-    )
-    pass
-
-
-def extraer_kenn():
-    logging.info("Extrayendo datos de la Universidad J.F. Kennedy")
-    pass
 
 
 def transform_data():
@@ -52,15 +48,9 @@ with DAG(
     )
 
     # Extraer la informacion de las dos universidades
-    extraer_fac_latinoamericana = PythonOperator(
-        task_id="extraer_fac_latinoamericana",
-        python_callable=extraer_latinoam,
-        retries=5,
-        retry_delay=timedelta(seconds=120),
-    )
-    extraer_kennedy = PythonOperator(
-        task_id="extraer_kennedy",
-        python_callable=extraer_kenn,
+    extraer_fac_latam_y_jfk = PythonOperator(
+        task_id="extraer_fac_latam_y_jfk",
+        python_callable=transform_data,
         retries=5,
         retry_delay=timedelta(seconds=120),
     )
@@ -73,9 +63,4 @@ with DAG(
     # Carga el archivo en el servidor s3
     load_to_s3 = PythonOperator(task_id="load_s3", python_callable=load_s3)
 
-    (
-        log_inicio_dag
-        >> [extraer_fac_latinoamericana, extraer_kennedy]
-        >> transform
-        >> load_to_s3
-    )
+    (log_inicio_dag >> extraer_fac_latam_y_jfk >> transform >> load_to_s3)
