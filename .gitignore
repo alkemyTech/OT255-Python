@@ -1,5 +1,6 @@
 .env
 <<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 *.pyc
 src/.DS_Store
@@ -21,3 +22,9 @@ src/.DS_Store
 =======
 files
 >>>>>>> c9546c3 (UC-UBA create directory for functions)
+=======
+files
+src/py_functions/try.py
+airflow/dags/try.py
+src/py_functions/__pycache__
+>>>>>>> 6f9e473 (UC-UBA prepare py functions for importing)
