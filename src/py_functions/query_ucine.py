@@ -11,7 +11,7 @@ from sqlalchemy import create_engine
 
 def main(univ: str):
     assert isinstance(univ, str), "University acronym must be string type."
-
+    
     # -- INITIAL CONFIG --
     # set the repository main folder as cwd
     os.chdir(Path(sys.path[0]) / "../..")
