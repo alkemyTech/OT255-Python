@@ -50,7 +50,7 @@ with DAG(
     # Extraer la informacion de las dos universidades
     extraer_fac_latam_y_jfk = PythonOperator(
         task_id="extraer_fac_latam_y_jfk",
-        python_callable=transform_data,
+        python_callable=extrac_fac_y_univ,
         retries=5,
         retry_delay=timedelta(seconds=120),
     )
