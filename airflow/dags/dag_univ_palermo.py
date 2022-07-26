@@ -11,7 +11,8 @@ logging.basicConfig(
 
 args = {
 	'description': 'obtener información sobre Univ. de Palermo',
-    'start_date': datetime(2022, 7, 30)
+    'start_date': datetime(2022, 7, 30),
+    'schedule_interval' : timedelta(hours=1)
 }
 
 dag = DAG('dag_univ_palermo',default_args=args)
