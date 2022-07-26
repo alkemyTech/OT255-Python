@@ -25,7 +25,7 @@ def main(univ: str):
     os.chdir(Path(sys.path[0]) / "../..")
 
     # set the name of the university as a variable to simplify code reuse.
-    univ_name = "uba"
+    univ_name = univ
     # set the origin and destination paths as a variable to simplify code reuse.
     raw_path = Path.cwd() / "files/raw"
     modified_path = Path.cwd() / "files/modified"
@@ -55,11 +55,13 @@ def main(univ: str):
 
     # check correspondence between column used for merging.
     assert (
-        df_location["postal_code"].dtype == df_univ["postal_code"].dtype
-    ), "postal_code column should have the same dtype in both data frames"
+        df_location["location"].dtype == df_univ["location"].dtype
+    ), "location column should have the same dtype in both data frames"
+    # generate an array to keep every possible postal code for duplicated location names.
+    df_location = df_location.groupby("location").postal_code.apply(list).reset_index()
 
     # merge and rearrange resulting columns.
-    df_univ = df_univ.merge(df_location, on="postal_code", how="left")
+    df_univ = df_univ.merge(df_location, on="location", how="left")
     df_univ = df_univ[
         [
             "university",
@@ -106,6 +108,7 @@ def main(univ: str):
 
     # export processed csv to destination folder.
     df_univ.to_csv(modified_path / "".join([file_name, ".csv"]), index=False)
+
 
 if __name__ == "__main__":
     main()
