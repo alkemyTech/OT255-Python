@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.providers.postgres.operators.postgres import PostgresOperator
 import logging
 
 
@@ -30,16 +29,8 @@ def cargar_datos_univ_nac_de_jujuy():
 extraer_datos_univ_nac_de_jujuy = PythonOperator(
     task_id = 'extraer_datos',
     retries = 5,
-    retry_delay = timedelta(minutes=1),
+    retry_delay = timedelta(minutes = 1),
     python_callable = extraer_datos_univ_nac_de_jujuy,
-    dag=dag
-)
-
-obtener_datos_univ_nac_de_jujuy = PostgresOperator(
-    task_id = 'extraer_datos',
-    retries = 5,
-    retry_delay = timedelta(minutes=1),
-    sql='proyecto_1/sql/univ_nacional_de_jujuy.sql',
     dag=dag
 )
 
