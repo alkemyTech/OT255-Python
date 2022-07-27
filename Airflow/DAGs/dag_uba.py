@@ -7,7 +7,11 @@ from airflow.operators.python import PythonOperator
 
 from airflow import DAG
 
+<<<<<<< HEAD
 path_root = Path(__file__).parents[1]
+=======
+path_root = Path(__file__).parents[2]
+>>>>>>> e7887c7 (UC-UBA load scripts as modules for DAG tasks)
 sys.path.append(str(path_root))
 
 from src.py_functions import process_univ, query_univ
