@@ -13,9 +13,8 @@ Airflow/DAGs/__pycache__/dag_villamaria.cpython-310.pyc
 Airflow/DAGs/__pycache__/DAGs universidades B.cpython-310.pyc
 src/.DS_Store
 *.csv
-src/py_functions/try.py
-src/py_functions/__pycache__
+airflow/src/py_functions/try.py
 airflow/dags/try.py
 airflow/files/temp
-src/py_functions/__pycache__
+airflow/dags/.airflowignore
 airflow/dags/.airflowignore
