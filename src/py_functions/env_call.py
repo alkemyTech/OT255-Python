@@ -4,7 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Variables .env
-path_env = Path(__file__).parent.parent.parent / ".gitignore" / ".env"
+path_env = Path(__file__).parent.parent.parent / ".env"
 dotenv_path = path_env
 load_dotenv(dotenv_path)
 host_db = os.getenv("DB_HOST")
