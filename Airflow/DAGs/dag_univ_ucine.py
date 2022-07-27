@@ -14,8 +14,8 @@ from src.py_functions import process_univ, query_univ
 
 # -- INITIAL CONFIG --
 # set the name of the university as a variable to simplify code reuse.
-univ_name = "uba"
-complete_name = "Universidad de Buenos Aires"
+univ_name = "ucine"
+complete_name = "Universidad del Cine"
 
 # set up configuration for logging to a file and to the console
 logger = logging.getLogger(__name__)
