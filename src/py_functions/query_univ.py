@@ -26,7 +26,7 @@ from sqlalchemy import create_engine
 
 def main(univ: str):
     assert isinstance(univ, str), "University acronym must be string type."
-    
+
     # -- INITIAL CONFIG --
     # set the repository main folder as cwd
     os.chdir(Path(sys.path[0]) / "../..")
@@ -77,12 +77,18 @@ def main(univ: str):
         [
             univ_name,
 <<<<<<< HEAD
+<<<<<<< HEAD
             "-".join(
                 [str(today.year), str(today.month).zfill(2), str(today.day).zfill(2)]
             ),
 =======
             "-".join([str(today.year), str(today.month).zfill(2), str(today.day).zfill(2)]),
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+            "-".join(
+                [str(today.year), str(today.month).zfill(2), str(today.day).zfill(2)]
+            ),
+>>>>>>> aeb2904 (UC-UBA load scripts as modules for DAG tasks)
         ]
     )
     # write query result into a csv file inside the destination folder.
@@ -93,8 +99,12 @@ def main(univ: str):
     shelf_file.close()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     print("Query task finished")
 =======
+=======
+
+>>>>>>> aeb2904 (UC-UBA load scripts as modules for DAG tasks)
 if __name__ == "__main__":
     main()
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
