@@ -11,7 +11,7 @@ from sqlalchemy import create_engine
 
 def main(univ: str):
     assert isinstance(univ, str), "University acronym must be string type."
-    
+
     # -- INITIAL CONFIG --
     # set the repository main folder as cwd
     os.chdir(Path(sys.path[0]) / "../..")
@@ -51,7 +51,9 @@ def main(univ: str):
     file_name = "_".join(
         [
             univ_name,
-            "-".join([str(today.year), str(today.month).zfill(2), str(today.day).zfill(2)]),
+            "-".join(
+                [str(today.year), str(today.month).zfill(2), str(today.day).zfill(2)]
+            ),
         ]
     )
     # write query result into a csv file inside the destination folder.
@@ -60,6 +62,7 @@ def main(univ: str):
     shelf_file = shelve.open(f"{raw_path}/../temp/last_file")
     shelf_file[f"{univ_name}_filename"] = file_name
     shelf_file.close()
+
 
 if __name__ == "__main__":
     main()
