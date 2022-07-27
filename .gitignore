@@ -25,6 +25,11 @@ files
 =======
 files
 src/py_functions/try.py
+src/py_functions/__pycache__
 airflow/dags/try.py
+<<<<<<< HEAD
 src/py_functions/__pycache__
 >>>>>>> 6f9e473 (UC-UBA prepare py functions for importing)
+=======
+airflow/dags/.airflowignore
+>>>>>>> 78c6b64 (UC-UBA load scripts as modules for DAG tasks)
