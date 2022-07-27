@@ -11,7 +11,7 @@ end as first_name,
 case	
 	when split_part(nombre,'_', 1) in ('MR.','MRS.','DR.','MS') then split_part(nombre,'_',3)
 else split_part(nombre,'_', 2)
-end as second_name,
+end as last_name,
 	sexo as gender,
 	(current_date - to_date(to_char(fecha_nacimiento :: DATE, 'yyyy-mm-dd'),'yyyy-mm-dd'))/365 as age, /* Convierto fecha_nacimiento -> a string con formato 'yyyy-mm-dd'-> a date con formato 'yyyy-mm-dd' */
 /* codigo postal y localidad */
