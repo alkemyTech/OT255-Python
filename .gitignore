@@ -18,8 +18,5 @@ Airflow/DAGs/__pycache__/DAGs universidades B.cpython-310.pyc
 src/.DS_Store
 >>>>>>> Stashed changes
 
-files/raw/codigos_postales.csv
-files/raw/flores.csv
-files/raw/villa_maria.csv
-files/modified/flores_normalizado.txt
-files/modified/villa_maria_normalizado.txt
+*.csv
+*.txt
