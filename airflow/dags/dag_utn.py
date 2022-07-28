@@ -3,11 +3,14 @@ from airflow import DAG
 # from airflow.providers.postgres.operators.postgres import PostgresOperator
 # from airflow.providers.postgres.operators.postgres import PostgresHook
 from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
-#from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+
+# from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.operators.python import PythonOperator
 
 from datetime import timedelta, datetime
 import logging
+
+from src.py_functions import callable
 
 
 logging.basicConfig(
@@ -20,14 +23,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 console_handler = logging.StreamHandler()
 logger.addHandler(console_handler)
-
-
-def database_connect():
-    pass
-
-
-def export_data():
-    pass
 
 
 def data_transform():
@@ -48,10 +43,12 @@ with DAG(
 ) as dag:
 
     t_conect_db = PythonOperator(
-        task_id="db_connect", python_callable=database_connect, retries=5
+        task_id="db_connect", python_callable=callable.db_connect(), retries=5
     )
 
-    t_export_data = PythonOperator(task_id="export_data", python_callable=export_data)
+    t_export_data = PythonOperator(
+        task_id="export_data", python_callable=callable.db_extract("utn")
+    )
 
     t_data_transform = PythonOperator(
         task_id="data_transform", python_callable=data_transform
