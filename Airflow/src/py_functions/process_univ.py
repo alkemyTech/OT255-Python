@@ -13,7 +13,7 @@ def main(univ: str):
     # -- FUNCTIONS --
     # change column dtype for columns present in the current dataframe
     def column_dtype_changer(df):
-        dtype_Dict = {
+        dtype_dict = {
             "university": str,
             "career": str,
             "inscription_date": str,
@@ -27,18 +27,18 @@ def main(univ: str):
         }
 
         for column in df:
-            df[column] = df[column].apply(dtype_Dict[column])
+            df[column] = df[column].apply(dtype_dict[column])
         return df
 
     # change format for columns with str dtype in the current dataframe
     def string_column_formatter(df):
         for column in df:
             if is_string_dtype(df[column]):
-                df[column] = df[column].map(border_blank_deleter)
-                df[column] = df[column].map(str.lower)
                 # delete hyphens except in 'inscription_date' column
                 if column != "inscription_date":
                     df[column].replace("-", " ", regex=True, inplace=True)
+                df[column] = df[column].map(border_blank_deleter)
+                df[column] = df[column].map(str.lower)
         return df
 
     # delete unexpected spaces for current dataframe values
@@ -85,8 +85,8 @@ def main(univ: str):
     url = "https://drive.google.com/uc?id=" + url.split("/")[-2]
     df_location = pd.read_csv(url, index_col=False)
     # rename columns to simplify future merging with university dataframe.
-    rename_Dict = {"codigo_postal": "postal_code", "localidad": "location"}
-    df_location = df_location.rename(columns=rename_Dict)
+    rename_dict = {"codigo_postal": "postal_code", "localidad": "location"}
+    df_location = df_location.rename(columns=rename_dict)
     # change columns dtype to match expected output.
     column_dtype_changer(df_location)
     # format columns with string dtype to match expected output.
