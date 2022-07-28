@@ -2,11 +2,11 @@ SELECT universities AS university,
 careers AS career,
 to_date(inscription_dates, 'DD-MM-YYYY') as inscription_date,
 CASE
-		WHEN SPLIT_PART(names, '-', 1) IN ('MRS.', 'MISS', 'MR.') THEN SPLIT_PART(names, '-', 2)
+		WHEN SPLIT_PART(names, '-', 1) IN ('MRS.', 'MISS', 'MR.', 'DR.') THEN SPLIT_PART(names, '-', 2)
 ELSE SPLIT_PART(names, '-', 1)
 END AS first_name,
 CASE
-		WHEN SPLIT_PART(names, '-', 1) IN ('MRS.', 'MISS', 'MR.') THEN SPLIT_PART(names, '-', 3)
+		WHEN SPLIT_PART(names, '-', 1) IN ('MRS.', 'MISS', 'MR.', 'DR.') THEN SPLIT_PART(names, '-', 3)
 ELSE SPLIT_PART(names, '-', 2)
 END AS last_name,
 sexo AS gender,
