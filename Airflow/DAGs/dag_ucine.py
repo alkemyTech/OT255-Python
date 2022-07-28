@@ -18,11 +18,7 @@ from airflow.operators.python import PythonOperator
 
 from airflow import DAG
 
-<<<<<<< HEAD
 path_root = Path(__file__).parents[1]
-=======
-path_root = Path(__file__).parents[2]
->>>>>>> e7887c7 (UC-UBA load scripts as modules for DAG tasks)
 sys.path.append(str(path_root))
 
 from src.py_functions import process_univ, query_univ
@@ -66,8 +62,12 @@ with DAG(
 =======
     task_query_univ = PythonOperator(
         task_id=f"task_query_{univ_name}",
+<<<<<<< HEAD
         python_callable=query_univ(univ_name),
 >>>>>>> d60e4a4 (UC-UBA load scripts as modules for DAG tasks)
+=======
+        python_callable=query_univ.main(univ_name),
+>>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
         retries=5,
         retry_delay=timedelta(minutes=2),
     )
@@ -90,10 +90,17 @@ with DAG(
     )
 =======
     task_process_univ = PythonOperator(
-        task_id=f"task_process_{univ_name}", python_callable=process_univ(univ_name)
+        task_id=f"task_process_{univ_name}",
+        python_callable=process_univ.main(univ_name),
     )
     # third task: upload resulting object to amazon s3
+<<<<<<< HEAD
     task_load_univ = PythonOperator(task_id=f"task_load_{univ_name}", python_callable=None)
 >>>>>>> d60e4a4 (UC-UBA load scripts as modules for DAG tasks)
+=======
+    task_load_univ = PythonOperator(
+        task_id=f"task_load_{univ_name}", python_callable=None
+    )
+>>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
 
 task_query_univ >> task_process_univ >> task_load_univ
