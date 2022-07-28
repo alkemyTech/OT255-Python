@@ -25,10 +25,14 @@ def main(univ: str):
     # change column dtype for columns present in the current dataframe
     def column_dtype_changer(df):
 <<<<<<< HEAD
+<<<<<<< HEAD
         dtype_dict = {
 =======
         dtype_Dict = {
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+        dtype_dict = {
+>>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
             "university": str,
             "career": str,
             "inscription_date": str,
@@ -43,16 +47,21 @@ def main(univ: str):
 
         for column in df:
 <<<<<<< HEAD
+<<<<<<< HEAD
             df[column] = df[column].apply(dtype_dict[column])
 =======
             df[column] = df[column].apply(dtype_Dict[column])
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+            df[column] = df[column].apply(dtype_dict[column])
+>>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
         return df
 
     # change format for columns with str dtype in the current dataframe
     def string_column_formatter(df):
         for column in df:
             if is_string_dtype(df[column]):
+<<<<<<< HEAD
 <<<<<<< HEAD
                 # delete hyphens except in 'inscription_date' column
                 if column != "inscription_date":
@@ -66,9 +75,13 @@ def main(univ: str):
 =======
                 df[column] = df[column].map(border_blank_deleter)
                 df[column] = df[column].map(str.lower)
+=======
+>>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
                 # delete hyphens except in 'inscription_date' column
                 if column != "inscription_date":
                     df[column].replace("-", " ", regex=True, inplace=True)
+                df[column] = df[column].map(border_blank_deleter)
+                df[column] = df[column].map(str.lower)
         return df
 
     # delete unexpected spaces for current dataframe values
@@ -117,12 +130,17 @@ def main(univ: str):
     df_location = pd.read_csv(url, index_col=False)
     # rename columns to simplify future merging with university dataframe.
 <<<<<<< HEAD
+<<<<<<< HEAD
     rename_dict = {"codigo_postal": "postal_code", "localidad": "location"}
     df_location = df_location.rename(columns=rename_dict)
 =======
     rename_Dict = {"codigo_postal": "postal_code", "localidad": "location"}
     df_location = df_location.rename(columns=rename_Dict)
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+    rename_dict = {"codigo_postal": "postal_code", "localidad": "location"}
+    df_location = df_location.rename(columns=rename_dict)
+>>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
     # change columns dtype to match expected output.
     column_dtype_changer(df_location)
     # format columns with string dtype to match expected output.
