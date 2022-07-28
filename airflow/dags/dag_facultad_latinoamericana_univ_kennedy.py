@@ -1,27 +1,18 @@
 import logging
-import os
-import sys
 from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-FOLDER_DIR = os.path.dirname(SCRIPT_DIR)
-sys.path.append(os.path.dirname(FOLDER_DIR))
-
 from src.py_functions.extract_fac_latam_univ_jfk import extrac_fac_y_univ
+from src.py_functions.transform_fac_latam_univ_jfk import (
+    transform_faclatam_ujfk,
+)
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
     datefmt="%Y-%m-%d",
 )
-
-
-def transform_data():
-    logging.info("Transformando la data")
-    pass
 
 
 def load_s3():
@@ -57,7 +48,7 @@ with DAG(
 
     # Transformar la data usando pandas
     transform = PythonOperator(
-        task_id="transform", python_callable=transform_data
+        task_id="transform", python_callable=transform_faclatam_ujfk
     )
 
     # Carga el archivo en el servidor s3
