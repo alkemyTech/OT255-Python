@@ -81,7 +81,7 @@ def main(univ: str):
 
     # -- INITIAL CONFIG --
     # set the repository main folder as cwd
-    os.chdir(Path(sys.path[0]) / "../..")
+    os.chdir(Path(sys.path[0]) / "..")
 
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
     # set the name of the university as a variable to simplify code reuse.
