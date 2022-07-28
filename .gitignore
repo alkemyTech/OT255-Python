@@ -1,12 +1,6 @@
 .env
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< Updated upstream
 *.pyc
 src/.DS_Store
-.DS_Store
-=======
-.DS_Store
 Airflow/DAGs/__pycache__/dag_3feb.cpython-310.pyc
 Airflow/DAGs/__pycache__/dag_facultad_latinoamericana_univ_kennedy.cpython-310.pyc
 Airflow/DAGs/__pycache__/dag_flores.cpython-310.pyc
@@ -18,18 +12,10 @@ Airflow/DAGs/__pycache__/dag_utn.cpython-310.pyc
 Airflow/DAGs/__pycache__/dag_villamaria.cpython-310.pyc
 Airflow/DAGs/__pycache__/DAGs universidades B.cpython-310.pyc
 src/.DS_Store
->>>>>>> Stashed changes
-=======
-files
->>>>>>> c9546c3 (UC-UBA create directory for functions)
-=======
-files
+*.csv
 src/py_functions/try.py
 src/py_functions/__pycache__
 airflow/dags/try.py
-<<<<<<< HEAD
+airflow/files/temp
 src/py_functions/__pycache__
->>>>>>> 6f9e473 (UC-UBA prepare py functions for importing)
-=======
 airflow/dags/.airflowignore
->>>>>>> 78c6b64 (UC-UBA load scripts as modules for DAG tasks)
