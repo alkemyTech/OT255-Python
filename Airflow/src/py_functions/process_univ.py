@@ -37,7 +37,6 @@ def main(univ: str):
                 # delete hyphens except in 'inscription_date' column
                 if column != "inscription_date":
                     df[column].replace("-", " ", regex=True, inplace=True)
-                # format string columns to match expected output
                 df[column] = df[column].map(border_blank_deleter)
                 df[column] = df[column].map(str.lower)
         return df
