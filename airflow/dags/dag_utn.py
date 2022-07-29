@@ -7,7 +7,7 @@ from airflow.operators.python import PythonOperator
 # from airflow.providers.postgres.operators.postgres import PostgresOperator
 # from airflow.providers.postgres.operators.postgres import PostgresHook
 from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
-from src.py_functions import callable
+from py_functions import callables
 
 logging.basicConfig(
     level=logging.INFO,
@@ -19,10 +19,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 console_handler = logging.StreamHandler()
 logger.addHandler(console_handler)
-
-
-def data_transform():
-    pass
 
 
 def hook_and_upload():
@@ -39,15 +35,15 @@ with DAG(
 ) as dag:
 
     t_conect_db = PythonOperator(
-        task_id="db_connect", python_callable=callable.db_connect(), retries=5
+        task_id="db_connect", python_callable=callables.db_connect(), retries=5
     )
 
     t_export_data = PythonOperator(
-        task_id="export_data", python_callable=callable.db_extract("utn")
+        task_id="export_data", python_callable=callables.db_extract("utn")
     )
 
     t_data_transform = PythonOperator(
-        task_id="data_transform", python_callable=data_transform
+        task_id="data_transform", python_callable=callables.csvByLocation_to_txt("utn")
     )
 
     t_creat_bucket = S3CreateBucketOperator(
