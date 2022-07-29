@@ -5,13 +5,13 @@ select
 	fecha_de_inscripcion as inscription_date,
 /* Split de 'name' en 'first_name' y 'second_name' */
 	case	
-	when split_part(nombre,'_', 1) in ('MR.','MRS.','DR.','MS') then split_part(nombre,'_',2)
+	when split_part(nombre,'_', 1) in ('MR.','MRS.','DR.','MS.') then split_part(nombre,'_',2)
 else split_part(nombre,'_', 1)
 end as first_name,
 case	
-	when split_part(nombre,'_', 1) in ('MR.','MRS.','DR.','MS') then split_part(nombre,'_',3)
+	when split_part(nombre,'_', 1) in ('MR.','MRS.','DR.','MS.') then split_part(nombre,'_',3)
 else split_part(nombre,'_', 2)
-end as second_name,
+end as last_name,
 	sexo as gender,
 	(current_date - to_date(to_char(fecha_nacimiento :: DATE, 'yyyy-mm-dd'),'yyyy-mm-dd'))/365 as age, /* Convierto fecha_nacimiento -> a string con formato 'yyyy-mm-dd'-> a date con formato 'yyyy-mm-dd' */
 /* codigo postal y localidad */

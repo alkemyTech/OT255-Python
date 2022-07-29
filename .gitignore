@@ -17,3 +17,6 @@ Airflow/DAGs/__pycache__/dag_villamaria.cpython-310.pyc
 Airflow/DAGs/__pycache__/DAGs universidades B.cpython-310.pyc
 src/.DS_Store
 >>>>>>> Stashed changes
+
+*.csv
+*.txt
