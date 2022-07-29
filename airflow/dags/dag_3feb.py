@@ -34,17 +34,17 @@ with DAG(
     schedule_interval=timedelta(hours=1),
 ) as dag:
 
-    t_conect_db = PythonOperator(
-        task_id="db_connect", python_callable=callables.db_connect(), retries=5
-    )
-
     t_export_data = PythonOperator(
-        task_id="export_data", python_callable=callables.db_extract("3feb")
+        task_id="export_data",
+        python_callable=callables.db_extract,
+        op_kwargs={"university": "3feb"},
+        retries=5,
     )
 
     t_data_transform = PythonOperator(
         task_id="data_transform",
-        python_callable=callables.csvByPostalCode_to_txt("3feb"),
+        python_callable=callables.csvByLocation_to_txt,
+        op_args={"university": "3feb"},
     )
 
     t_creat_bucket = S3CreateBucketOperator(
