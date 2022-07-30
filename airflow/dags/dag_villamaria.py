@@ -3,6 +3,7 @@ from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from py_functions.manip_pandas_villa_maria import manip_pandas_villa_maria
 
 # Importo la funcion para hacer la extraccion
 from src.py_functions import extraccion_PyOp
@@ -14,15 +15,12 @@ from src.py_functions import extraccion_PyOp
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 formato = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+file_hanlder = logging.FileHandler("daf_villa_maria.log")
+file_hanlder.setFormatter(formato)
 # Formato
 stream_handler = logging.StreamHandler()  # Seteo en la consola
 stream_handler.setFormatter(formato)
 logger.addHandler(stream_handler)  # Se agrega a logger
-
-
-def manip_pandas():
-    # Aca hago todo el procesamiento de la data con PythonOperator
-    pass
 
 
 def upload_to_s3():
@@ -42,13 +40,14 @@ with DAG(
     # Conexion a la base de datos y extraccion de la data de la universidad
     extraccion_bd = PythonOperator(
         task_id="exrtaccion_bd",
-        python_callable=extraccion_PyOp("villa_maria"),
+        python_callable=extraccion_PyOp,
         retries=5,
+        op_kwargs={"university": "villa_maria"},
     )
 
     # Manipulacion de los datos con Pandas
     process_pandas = PythonOperator(
-        task_id="extract_pandas", python_callable=manip_pandas
+        task_id="extract_pandas", python_callable=manip_pandas_villa_maria
     )
 
     upload_s3 = PythonOperator(task_id="upload_s3", python_callable=upload_to_s3)
