@@ -1,21 +1,7 @@
 .env
-<<<<<<< Updated upstream
 *.pyc
 src/.DS_Store
 .DS_Store
-=======
-.DS_Store
-Airflow/DAGs/__pycache__/dag_3feb.cpython-310.pyc
-Airflow/DAGs/__pycache__/dag_facultad_latinoamericana_univ_kennedy.cpython-310.pyc
-Airflow/DAGs/__pycache__/dag_flores.cpython-310.pyc
-Airflow/DAGs/__pycache__/dag_rio_cuarto.cpython-310.pyc
-Airflow/DAGs/__pycache__/dag_univ_moron.cpython-310.pyc
-Airflow/DAGs/__pycache__/dag_univ_UBA.cpython-310.pyc
-Airflow/DAGs/__pycache__/dag_univ_UC.cpython-310.pyc
-Airflow/DAGs/__pycache__/dag_utn.cpython-310.pyc
-Airflow/DAGs/__pycache__/dag_villamaria.cpython-310.pyc
-Airflow/DAGs/__pycache__/DAGs universidades B.cpython-310.pyc
-src/.DS_Store
->>>>>>> Stashed changes
 venv
 *.csv
+*.txt

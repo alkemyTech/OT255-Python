@@ -1,21 +1,23 @@
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
+# Importo la funcion para hacer la extraccion
+from src.py_functions import extraccion_PyOp
 
-def conf_logs():
-    logging.basicConfig(
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        datefmt="%Y-%m-%d",
-        level=logging.INFO,
-    )
+# from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+# from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
 
-
-def conex_postgres():
-    # Aca realizo la Query con PostgresOperator
-    pass
+# Logs
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formato = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+# Formato
+stream_handler = logging.StreamHandler()  # Seteo en la consola
+stream_handler.setFormatter(formato)
+logger.addHandler(stream_handler)  # Se agrega a logger
 
 
 def manip_pandas():
@@ -30,29 +32,18 @@ def upload_to_s3():
     pass
 
 
-# Configuracion de los Retries
-def_args = {
-    "owner": "Lautaro Flores",
-    "retries": 5,
-    "retry_delay": timedelta(minutes=1),
-}
-
 # Configuracion del DAG
 with DAG(
     "dag_villamaria",
-    default_args=def_args,
     description="DAG para la Universidad de Villa Maria.",
-    # Intervalo de ejecución del DAG.
     schedule_interval="0 * * * *",
     start_date=datetime(2022, 7, 19),
 ) as dag:
-    # Logs
-
-    loggs = PythonOperator(task_id="loggs", python_callable=conf_logs)
-
     # Conexion a la base de datos y extraccion de la data de la universidad
-    conexion_postgres = PythonOperator(
-        task_id="conexion_postgres", python_callable=conex_postgres
+    extraccion_bd = PythonOperator(
+        task_id="exrtaccion_bd",
+        python_callable=extraccion_PyOp("villa_maria"),
+        retries=5,
     )
 
     # Manipulacion de los datos con Pandas
@@ -62,4 +53,4 @@ with DAG(
 
     upload_s3 = PythonOperator(task_id="upload_s3", python_callable=upload_to_s3)
 
-    loggs >> conexion_postgres >> process_pandas >> upload_s3
+    extraccion_bd >> process_pandas >> upload_s3
