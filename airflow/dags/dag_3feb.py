@@ -1,14 +1,13 @@
-from airflow import DAG
+import logging
+from datetime import datetime, timedelta
 
+from airflow import DAG
+# from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+from airflow.operators.python import PythonOperator
 # from airflow.providers.postgres.operators.postgres import PostgresOperator
 # from airflow.providers.postgres.operators.postgres import PostgresHook
 from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
-#from airflow.providers.amazon.aws.hooks.s3 import S3Hook
-from airflow.operators.python import PythonOperator
-
-from datetime import timedelta, datetime
-import logging
-
+from py_functions import callables
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,18 +19,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 console_handler = logging.StreamHandler()
 logger.addHandler(console_handler)
-
-
-def database_connect():
-    pass
-
-
-def export_data():
-    pass
-
-
-def data_transform():
-    pass
 
 
 def hook_and_upload():
@@ -47,14 +34,17 @@ with DAG(
     schedule_interval=timedelta(hours=1),
 ) as dag:
 
-    t_conect_db = PythonOperator(
-        task_id="db_connect", python_callable=database_connect, retries=5
+    t_export_data = PythonOperator(
+        task_id="export_data",
+        python_callable=callables.db_extract,
+        op_kwargs={"university": "3feb"},
+        retries=5,
     )
 
-    t_export_data = PythonOperator(task_id="export_data", python_callable=export_data)
-
     t_data_transform = PythonOperator(
-        task_id="data_transform", python_callable=data_transform
+        task_id="data_transform",
+        python_callable=callables.csvByLocation_to_txt,
+        op_args={"university": "3feb"},
     )
 
     t_creat_bucket = S3CreateBucketOperator(
