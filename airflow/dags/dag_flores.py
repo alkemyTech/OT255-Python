@@ -23,7 +23,7 @@ stream_handler.setFormatter(formato)
 logger.addHandler(stream_handler)  # Se agrega a logger
 
 
-def upload_to_s3():
+def carga_s3():
     # Primero establezco la conexion con S3Hook()
     # Luego, creo un bucket, si no existe, con S3CreateBucketOperator
     # Por ultimo, subo el archivo a ese bucket
@@ -50,6 +50,6 @@ with DAG(
         task_id="extract_pandas", python_callable=manip_pandas_flores
     )
 
-    upload_s3 = PythonOperator(task_id="upload_s3", python_callable=upload_to_s3)
+    upload_s3 = PythonOperator(task_id="upload_s3", python_callable=carga_s3)
 
     extraccion_bd >> process_pandas >> upload_s3

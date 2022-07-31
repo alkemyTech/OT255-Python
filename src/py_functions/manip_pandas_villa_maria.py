@@ -96,7 +96,7 @@ def manip_pandas_villa_maria():
         Path(__file__).parent.parent.parent
         / "files"
         / "modified"
-        / (university + "_normalizado.txt")
+        / ("g255_" + university + ".txt")
     )
 
 

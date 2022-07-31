@@ -79,7 +79,7 @@ def manip_pandas_flores():
         Path(__file__).parent.parent.parent
         / "files"
         / "modified"
-        / (university + "_normalizado.txt")
+        / ("g255_" + university + ".txt")
     )
     # return df_univ
 
