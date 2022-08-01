@@ -1,21 +1,16 @@
-import datetime
-import os
-import shelve
-import sys
-from pathlib import Path
+def query_univ(univ):
+    import datetime
+    import os
+    import shelve
+    from pathlib import Path
 
-import pandas as pd
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
+    import pandas as pd
+    from dotenv import load_dotenv
+    from sqlalchemy import create_engine
 
-
-def main(univ: str):
     assert isinstance(univ, str), "University acronym must be string type."
-
+    
     # -- INITIAL CONFIG --
-    # set the repository main folder as cwd
-    os.chdir(Path(sys.path[0]) / "..")
-
     # set the name of the university as a variable to simplify code reuse.
     univ_name = univ
     # set the destination path as a variable to simplify code reuse.
@@ -26,6 +21,8 @@ def main(univ: str):
         os.makedirs(raw_path)
     if not os.path.isdir(raw_path / "../temp"):
         os.makedirs(raw_path / "../temp")
+
+    print(Path.cwd())
 
     # -- ENVIRONMENT VARIABLES --
     # load environment variables with python-dotenv module.
@@ -39,7 +36,7 @@ def main(univ: str):
 
     # -- SCRIPT --
     # read the sql script into a local variable.
-    query = open(f"src/sql/query_{univ_name}.sql", "r")
+    query = open(f"./include/sql/query_{univ_name}.sql", "r")
     # create engine to make the connection with the database.
     engine = create_engine(
         f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
@@ -63,6 +60,4 @@ def main(univ: str):
     shelf_file[f"{univ_name}_filename"] = file_name
     shelf_file.close()
 
-
-if __name__ == "__main__":
-    main()
+    print("Query task finished")
