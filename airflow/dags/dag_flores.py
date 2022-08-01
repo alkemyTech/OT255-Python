@@ -52,7 +52,7 @@ with DAG(
         / "files"
         / "modified"
         / "g255_flores.txt",
-        dest_key=public_key,
+        dest_key="g255_flores.txt",
         dest_bucket=bucket_name,
     )
 

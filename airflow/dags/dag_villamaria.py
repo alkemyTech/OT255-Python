@@ -51,7 +51,7 @@ with DAG(
         / "files"
         / "modified"
         / "g255_villa_maria.txt",
-        dest_key=public_key,
+        dest_key="g255_villa_maria.txt",
         dest_bucket=bucket_name,
     )
 
