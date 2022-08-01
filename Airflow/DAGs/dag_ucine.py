@@ -2,9 +2,8 @@ import logging
 from datetime import datetime, timedelta
 
 from airflow.operators.python import PythonVirtualenvOperator
-from airflow.providers.amazon.aws.transfers.local_to_s3 import (
-    LocalFilesystemToS3Operator,
-)
+from airflow.providers.amazon.aws.transfers.local_to_s3 import \
+    LocalFilesystemToS3Operator
 from include.process_univ import process_univ
 from include.query_univ import query_univ
 
