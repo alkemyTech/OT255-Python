@@ -1,16 +1,11 @@
 import logging
-import sys
 from datetime import datetime, timedelta
-from pathlib import Path
 
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
+from include.process_univ import process_univ
+from include.query_univ import query_univ
 
 from airflow import DAG
-
-path_root = Path(__file__).parents[1]
-sys.path.append(str(path_root))
-
-from src.py_functions import process_univ, query_univ
 
 # -- INITIAL CONFIG --
 # set the name of the university as a variable to simplify code reuse.
@@ -31,6 +26,11 @@ stream_handler.setFormatter(formatter)
 
 logger.addHandler(file_handler)
 
+
+def _pass():
+    pass
+
+
 # -- DAG --
 # set up the DAG for the current university
 with DAG(
@@ -41,20 +41,25 @@ with DAG(
     catchup=False,
 ) as dag:
     # first task: run sql script and export query result to (.csv)?
-    task_query_univ = PythonOperator(
+    task_query_univ = PythonVirtualenvOperator(
         task_id=f"task_query_{univ_name}",
-        python_callable=query_univ.main(univ_name),
+        python_callable=query_univ,
+        op_args=[univ_name],
+        requirements=["pandas", "python-dotenv", "sqlalchemy", "psycopg2-binary"],
         retries=5,
         retry_delay=timedelta(minutes=2),
     )
     # second task: process raw data in pandas
-    task_process_univ = PythonOperator(
+    task_process_univ = PythonVirtualenvOperator(
         task_id=f"task_process_{univ_name}",
-        python_callable=process_univ.main(univ_name),
+        python_callable=process_univ,
+        op_args=[univ_name],
+        requirements=["pandas"]
     )
     # third task: upload resulting object to amazon s3
     task_load_univ = PythonOperator(
-        task_id=f"task_load_{univ_name}", python_callable=None
+        task_id=f"task_load_{univ_name}",
+        python_callable=_pass
     )
 
 task_query_univ >> task_process_univ >> task_load_univ

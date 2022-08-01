@@ -1,13 +1,11 @@
-import os
-import shelve
-import sys
-from pathlib import Path
+def process_univ(univ):
+    import os
+    import shelve
+    from pathlib import Path
 
-import pandas as pd
-from pandas.api.types import is_string_dtype
+    import pandas as pd
+    from pandas.api.types import is_string_dtype
 
-
-def main(univ: str):
     assert isinstance(univ, str), "University acronym must be string type."
 
     # -- FUNCTIONS --
@@ -37,22 +35,12 @@ def main(univ: str):
                 # delete hyphens except in 'inscription_date' column
                 if column != "inscription_date":
                     df[column].replace("-", " ", regex=True, inplace=True)
-                df[column] = df[column].map(border_blank_deleter)
+                # format string columns to match expected output
+                df[column] = df[column].map(str.strip)
                 df[column] = df[column].map(str.lower)
         return df
 
-    # delete unexpected spaces for current dataframe values
-    def border_blank_deleter(x):
-        if x[0].isspace():
-            x = x[1:]
-        if x[-1].isspace():
-            x = x[:-1]
-        return x
-
     # -- INITIAL CONFIG --
-    # set the repository main folder as cwd
-    os.chdir(Path(sys.path[0]) / "..")
-
     # set the name of the university as a variable to simplify code reuse.
     univ_name = univ
     # set the origin and destination paths as a variable to simplify code reuse.
@@ -134,6 +122,4 @@ def main(univ: str):
     # - export resulting dataframe -
     df_univ.to_csv(modified_path / "".join([file_name, ".csv"]), index=False)
 
-
-if __name__ == "__main__":
-    main()
+    print("Query task finished")
