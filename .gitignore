@@ -1,2 +1,11 @@
 .env
+<<<<<<< HEAD
 .sql
+=======
+*.pyc
+src/.DS_Store
+.DS_Store
+venv
+*.csv
+*.txt
+>>>>>>> 69e5ea63aa424d2dd2c9caa82074f3471015b9b6

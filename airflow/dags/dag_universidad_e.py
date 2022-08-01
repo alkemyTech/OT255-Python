@@ -30,18 +30,15 @@ with DAG(
 ) as dag:
     consulta_Interamericana = PythonOperator(
         task_id='consultaSQL_UNMoron',
-        python_callable=uInter,
-        dag=dag
+        python_callable=uInter        
         )
     consulta_Pampa = PythonOperator(
         task_id='consultaSQL_UNRC',
-        python_callable=uPampa,
-        dag=dag
+        python_callable=uPampa        
         )
     procesamientoPandas = PythonOperator(
         task_id='procesamientoPandas',
-        python_callable=cleaningData,
-        dag=dag
+        python_callable=cleaningData        
         )
     cargaS3 = DummyOperator(task_id='cargaS3')
      
