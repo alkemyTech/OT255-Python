@@ -1,9 +1,13 @@
+<<<<<<< HEAD:Airflow/src/py_functions/query_univ.py
 <<<<<<< HEAD
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/query_univ.py
 def query_univ(univ):
     import datetime
     import os
     import shelve
     from pathlib import Path
+<<<<<<< HEAD:Airflow/src/py_functions/query_univ.py
 
     import pandas as pd
     from dotenv import load_dotenv
@@ -18,20 +22,23 @@ import os
 import shelve
 import sys
 from pathlib import Path
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/query_univ.py
 
-import pandas as pd
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
+    import pandas as pd
+    from dotenv import load_dotenv
+    from sqlalchemy import create_engine
 
-
-def main(univ: str):
     assert isinstance(univ, str), "University acronym must be string type."
-
+    
     # -- INITIAL CONFIG --
+<<<<<<< HEAD:Airflow/src/py_functions/query_univ.py
     # set the repository main folder as cwd
     os.chdir(Path(sys.path[0]) / "..")
 
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/query_univ.py
     # set the name of the university as a variable to simplify code reuse.
     univ_name = univ
     # set the destination path as a variable to simplify code reuse.
@@ -43,11 +50,16 @@ def main(univ: str):
     if not os.path.isdir(raw_path / "../temp"):
         os.makedirs(raw_path / "../temp")
 
+<<<<<<< HEAD:Airflow/src/py_functions/query_univ.py
 <<<<<<< HEAD
     print(Path.cwd())
 
 =======
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+    print(Path.cwd())
+
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/query_univ.py
     # -- ENVIRONMENT VARIABLES --
     # load environment variables with python-dotenv module.
     load_dotenv()
@@ -60,11 +72,15 @@ def main(univ: str):
 
     # -- SCRIPT --
     # read the sql script into a local variable.
+<<<<<<< HEAD:Airflow/src/py_functions/query_univ.py
 <<<<<<< HEAD
     query = open(f"./include/sql/query_{univ_name}.sql", "r")
 =======
     query = open(f"src/sql/query_{univ_name}.sql", "r")
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+    query = open(f"./include/sql/query_{univ_name}.sql", "r")
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/query_univ.py
     # create engine to make the connection with the database.
     engine = create_engine(
         f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
@@ -98,6 +114,7 @@ def main(univ: str):
     shelf_file[f"{univ_name}_filename"] = file_name
     shelf_file.close()
 
+<<<<<<< HEAD:Airflow/src/py_functions/query_univ.py
 <<<<<<< HEAD
 <<<<<<< HEAD
     print("Query task finished")
@@ -108,3 +125,6 @@ def main(univ: str):
 if __name__ == "__main__":
     main()
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+    print("Query task finished")
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/query_univ.py
