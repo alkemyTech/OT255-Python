@@ -16,7 +16,9 @@ import sys
 >>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working)
 from datetime import datetime, timedelta
 
-from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
+from airflow.operators.python import PythonVirtualenvOperator
+from airflow.providers.amazon.aws.transfers.local_to_s3 import \
+    LocalFilesystemToS3Operator
 from include.process_univ import process_univ
 from include.query_univ import query_univ
 
@@ -49,11 +51,6 @@ stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(formatter)
 
 logger.addHandler(file_handler)
-
-
-def _pass():
-    pass
-
 
 # -- DAG --
 # set up the DAG for the current university
@@ -98,10 +95,11 @@ with DAG(
         task_id=f"task_process_{univ_name}",
         python_callable=process_univ,
         op_args=[univ_name],
-        requirements=["pandas"]
+        requirements=["pandas"],
     )
     # third task: upload resulting object to amazon s3
     task_load_univ = LocalFilesystemToS3Operator(
+<<<<<<< HEAD
         task_id=f"task_load_{univ_name}",
         filename=f"./files/modified/g255_{univ_name}.csv",
         aws_conn_id="s3_alkemy",
@@ -125,8 +123,13 @@ with DAG(
 >>>>>>> d60e4a4 (UC-UBA load scripts as modules for DAG tasks)
 =======
     task_load_univ = PythonOperator(
+=======
+>>>>>>> d26f2d7 (UC-UBA add s3 load task)
         task_id=f"task_load_{univ_name}",
-        python_callable=_pass
+        filename=f"./files/modified/g255_{univ_name}.csv",
+        dest_key=f"g255_{univ_name}.csv",
+        dest_bucket="cohorte-julio-8972766c",
+        replace=True,
     )
 >>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
 
