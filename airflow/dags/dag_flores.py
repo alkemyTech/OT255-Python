@@ -1,15 +1,14 @@
 import logging
 from datetime import datetime
+from src.py_functions.env_call import *
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from py_functions.manip_pandas_flores import manip_pandas_flores
-
-# Importo la funcion para hacer la extraccion
+from airflow.providers.amazon.aws.transfers.local_to_s3 import (
+    LocalFilesystemToS3Operator,
+)
+from py_functions import manip_pandas_flores
 from src.py_functions import extraccion_PyOp
-
-# from airflow.providers.amazon.aws.hooks.s3 import S3Hook
-# from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
 
 # Logs
 logger = logging.getLogger(__name__)
@@ -21,13 +20,6 @@ file_hanlder.setFormatter(formato)
 stream_handler = logging.StreamHandler()  # Seteo en la consola
 stream_handler.setFormatter(formato)
 logger.addHandler(stream_handler)  # Se agrega a logger
-
-
-def carga_s3():
-    # Primero establezco la conexion con S3Hook()
-    # Luego, creo un bucket, si no existe, con S3CreateBucketOperator
-    # Por ultimo, subo el archivo a ese bucket
-    pass
 
 
 # Configuracion del DAG
@@ -50,6 +42,18 @@ with DAG(
         task_id="extract_pandas", python_callable=manip_pandas_flores
     )
 
-    upload_s3 = PythonOperator(task_id="upload_s3", python_callable=carga_s3)
+    # https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/_api/airflow/providers/amazon/aws/transfers/local_to_s3/index.html#module-airflow.providers.amazon.aws.transfers.local_to_s3
+    upload_s3 = LocalFilesystemToS3Operator(
+        task_id="upload_s3",
+        aws_conn_id="S3_Connection",
+        replace=True,
+        # filename="files/modified/g255_flores.txt"
+        filename=Path(__file__).parent.parent.parent
+        / "files"
+        / "modified"
+        / "g255_flores.txt",
+        dest_key=public_key,
+        dest_bucket=bucket_name,
+    )
 
     extraccion_bd >> process_pandas >> upload_s3
