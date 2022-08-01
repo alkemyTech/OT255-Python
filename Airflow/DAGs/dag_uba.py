@@ -56,6 +56,7 @@ with DAG(
     # third task: upload resulting object to amazon s3
     task_load_univ = LocalFilesystemToS3Operator(
         task_id=f"task_load_{univ_name}",
+        aws_conn_id="s3_conn_alkemy",
         filename=f"./files/modified/g255_{univ_name}.csv",
         dest_key=f"g255_{univ_name}.csv",
         dest_bucket="cohorte-julio-8972766c",
