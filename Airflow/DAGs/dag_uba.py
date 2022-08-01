@@ -1,5 +1,6 @@
 import logging
 <<<<<<< HEAD
+<<<<<<< HEAD
 from datetime import datetime, timedelta
 
 from airflow import DAG
@@ -11,19 +12,25 @@ from include.process_univ import process_univ
 from include.query_univ import query_univ
 =======
 import sys
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working)
 from datetime import datetime, timedelta
-from pathlib import Path
 
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, PythonVirtualenvOperator
+from include.process_univ import process_univ
+from include.query_univ import query_univ
 
 from airflow import DAG
 
+<<<<<<< HEAD
 path_root = Path(__file__).parents[1]
 sys.path.append(str(path_root))
 
 from src.py_functions import process_univ, query_univ
 >>>>>>> d60e4a4 (UC-UBA load scripts as modules for DAG tasks)
 
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working)
 # -- INITIAL CONFIG --
 # set the name of the university as a variable to simplify code reuse.
 univ_name = "uba"
@@ -43,6 +50,11 @@ stream_handler.setFormatter(formatter)
 
 logger.addHandler(file_handler)
 
+
+def _pass():
+    pass
+
+
 # -- DAG --
 # set up the DAG for the current university
 with DAG(
@@ -53,6 +65,7 @@ with DAG(
     catchup=False,
 ) as dag:
     # first task: run sql script and export query result to (.csv)?
+<<<<<<< HEAD
 <<<<<<< HEAD
     task_query_univ = PythonVirtualenvOperator(
         task_id=f"task_query_{univ_name}",
@@ -68,10 +81,18 @@ with DAG(
 =======
         python_callable=query_univ.main(univ_name),
 >>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
+=======
+    task_query_univ = PythonVirtualenvOperator(
+        task_id=f"task_query_{univ_name}",
+        python_callable=query_univ,
+        op_args=[univ_name],
+        requirements=["pandas", "python-dotenv", "sqlalchemy", "psycopg2-binary"],
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working)
         retries=5,
         retry_delay=timedelta(minutes=2),
     )
     # second task: process raw data in pandas
+<<<<<<< HEAD
 <<<<<<< HEAD
     task_process_univ = PythonVirtualenvOperator(
         task_id=f"task_process_{univ_name}",
@@ -90,8 +111,13 @@ with DAG(
     )
 =======
     task_process_univ = PythonOperator(
+=======
+    task_process_univ = PythonVirtualenvOperator(
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working)
         task_id=f"task_process_{univ_name}",
-        python_callable=process_univ.main(univ_name),
+        python_callable=process_univ,
+        op_args=[univ_name],
+        requirements=["pandas"]
     )
     # third task: upload resulting object to amazon s3
 <<<<<<< HEAD
@@ -99,7 +125,8 @@ with DAG(
 >>>>>>> d60e4a4 (UC-UBA load scripts as modules for DAG tasks)
 =======
     task_load_univ = PythonOperator(
-        task_id=f"task_load_{univ_name}", python_callable=None
+        task_id=f"task_load_{univ_name}",
+        python_callable=_pass
     )
 >>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
 

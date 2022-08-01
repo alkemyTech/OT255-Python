@@ -1,8 +1,12 @@
+<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
 <<<<<<< HEAD
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
 def process_univ(univ):
     import os
     import shelve
     from pathlib import Path
+<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
 
     import pandas as pd
     from pandas.api.types import is_string_dtype
@@ -12,13 +16,18 @@ import os
 import shelve
 import sys
 from pathlib import Path
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
 
-import pandas as pd
-from pandas.api.types import is_string_dtype
+    import pandas as pd
+    from pandas.api.types import is_string_dtype
 
+<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
 
 def main(univ: str):
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
     assert isinstance(univ, str), "University acronym must be string type."
 
     # -- FUNCTIONS --
@@ -80,23 +89,19 @@ def main(univ: str):
                 # delete hyphens except in 'inscription_date' column
                 if column != "inscription_date":
                     df[column].replace("-", " ", regex=True, inplace=True)
-                df[column] = df[column].map(border_blank_deleter)
+                # format string columns to match expected output
+                df[column] = df[column].map(str.strip)
                 df[column] = df[column].map(str.lower)
         return df
 
-    # delete unexpected spaces for current dataframe values
-    def border_blank_deleter(x):
-        if x[0].isspace():
-            x = x[1:]
-        if x[-1].isspace():
-            x = x[:-1]
-        return x
-
     # -- INITIAL CONFIG --
+<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
     # set the repository main folder as cwd
     os.chdir(Path(sys.path[0]) / "..")
 
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
     # set the name of the university as a variable to simplify code reuse.
     univ_name = univ
     # set the origin and destination paths as a variable to simplify code reuse.
@@ -188,6 +193,7 @@ def main(univ: str):
     # - export resulting dataframe -
     df_univ.to_csv(modified_path / "".join([file_name, ".csv"]), index=False)
 
+<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
 <<<<<<< HEAD
     print("Query task finished")
 =======
@@ -195,3 +201,6 @@ def main(univ: str):
 if __name__ == "__main__":
     main()
 >>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
+=======
+    print("Query task finished")
+>>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
