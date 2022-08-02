@@ -181,7 +181,8 @@ def csvByLocation_to_txt(university):
         Path.cwd() / "files" / "modified" / ("normalized_" + university + ".txt")
     )
 
-db_extract('3feb')
-csvByPostalCode_to_txt('3feb')
-db_extract('utn')
-csvByLocation_to_txt('utn')
+
+db_extract("3feb")
+csvByPostalCode_to_txt("3feb")
+db_extract("utn")
+csvByLocation_to_txt("utn")

@@ -7,8 +7,7 @@ from airflow.operators.python import PythonOperator
 # from airflow.providers.postgres.operators.postgres import PostgresOperator
 # from airflow.providers.postgres.operators.postgres import PostgresHook
 # from airflow.providers.amazon.aws.operators.s3 import S3CreateBucketOperator
-from src.py_functions import callables
-from src.py_functions import s3_upload
+from src.py_functions import callables, s3_upload
 
 logging.basicConfig(
     level=logging.INFO,
@@ -20,8 +19,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 console_handler = logging.StreamHandler()
 logger.addHandler(console_handler)
-
-
 
 
 with DAG(
@@ -44,17 +41,18 @@ with DAG(
         op_args={"university": "utn"},
     )
 
-    #t_creat_bucket = S3CreateBucketOperator(
+    # t_creat_bucket = S3CreateBucketOperator(
     #    task_id="create_bucket", bucket_name="univ_3febrero_bucket"
-    #)
+    # )
 
     t_data_load = PythonOperator(
-    task_id= 'upload_utn_to_s3',
-            python_callable=s3_upload.upload_univ_to_s3,
-            op_kwargs={
-                'filename': 'files/modified/g255_utn.txt',
-                'key': 'g255_utn.txt',
-                'bucket_name': 'cohorte-julio-8972766c'}
-            )
+        task_id="upload_utn_to_s3",
+        python_callable=s3_upload.upload_univ_to_s3,
+        op_kwargs={
+            "filename": "files/modified/g255_utn.txt",
+            "key": "g255_utn.txt",
+            "bucket_name": "cohorte-julio-8972766c",
+        },
+    )
 
     t_export_data >> t_data_transform >> t_data_load
