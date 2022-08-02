@@ -1,8 +1,20 @@
 from datetime import datetime, timedelta
+import logging
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(message)s",
+    datefmt="%Y-%m-%d",
+)
+
+# Create custom logger, add console handler
+logger = logging.getLogger(__name__)
+console_handler = logging.StreamHandler()
+logger.addHandler(console_handler)
 
 # -- TASKS --
 # development of tasks that take part in the DAG
