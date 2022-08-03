@@ -69,7 +69,7 @@ with DAG(
     Cargar_csv_latam_s3 = LocalFilesystemToS3Operator(
         task_id="Cargar_csv_latam_s3",
         filename=ruta_latam,
-        dest_key=config("S3_KEY"),
+        dest_key="g255_fac_latam.csv",
         dest_bucket=config("S3_BUCKET"),
         aws_conn_id="g255 S3",
         replace=True,
@@ -78,7 +78,7 @@ with DAG(
     Cargar_csv_jfk_s3 = LocalFilesystemToS3Operator(
         task_id="Cargar_csv_jfk_s3",
         filename=ruta_jfk,
-        dest_key=config("S3_KEY"),
+        dest_key="g255_univ_jfk_.csv",
         dest_bucket=config("S3_BUCKET"),
         aws_conn_id="g255 S3",
         replace=True,
@@ -88,6 +88,5 @@ with DAG(
         log_inicio_dag
         >> extraer_fac_latam_y_jfk
         >> transform
-        >> Cargar_csv_latam_s3
-        >> Cargar_csv_jfk_s3
+        >> (Cargar_csv_latam_s3, Cargar_csv_jfk_s3)
     )
