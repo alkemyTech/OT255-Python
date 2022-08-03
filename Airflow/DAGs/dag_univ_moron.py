@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-
+from Include import callables
+from pathlib import Path
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,10 +19,6 @@ logger.addHandler(console_handler)
 
 # -- TASKS --
 # development of tasks that take part in the DAG
-def _t_query_moron():
-    pass
-
-
 def _t_process_moron():
     pass
 
@@ -29,7 +26,7 @@ def _t_process_moron():
 def _t_load_moron():
     pass
 
-
+print(Path().cwd())
 # -- DAG --
 # set up the DAG for the current university
 with DAG(
@@ -42,7 +39,8 @@ with DAG(
     # first task: run sql script and export query result to (.csv)?
     task_query_moron = PythonOperator(
         task_id="task_query_moron",
-        python_callable=_t_query_moron,
+        python_callable=callables.db_extract,
+        op_kwargs={"university": "flores"},
         retries=5,
     )
     # second task: process raw data in pandas

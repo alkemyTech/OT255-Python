@@ -3,6 +3,8 @@ import logging
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from src.py_functions import callables
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,10 +19,6 @@ logger.addHandler(console_handler)
 
 # -- TASKS --
 # development of tasks that take part in the DAG
-def _t_query_rio_cuarto():
-    pass
-
-
 def _t_process_rio_cuarto():
     pass
 
@@ -41,7 +39,8 @@ with DAG(
     # first task: run sql script and export query result to (.csv)?
     task_query_rio_cuarto = PythonOperator(
         task_id="task_query_rio_cuarto",
-        python_callable=_t_query_rio_cuarto,
+        python_callable=callables.db_extract,
+        op_kwargs={"university": "rc"},
         retries=5,
     )
     # second task: process raw data in pandas
