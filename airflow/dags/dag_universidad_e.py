@@ -8,8 +8,6 @@ import logging
 from src.py_functions.extract_e import uInter
 from src.py_functions.extract_e  import uPampa
 from src.py_functions.clean_e import cleaningData
-from src.py_functions.cargas3e import cargar_inter
-from src.py_functions.cargas3e import cargar_pampa
 
 
 logger = logging.getLogger('logger')
