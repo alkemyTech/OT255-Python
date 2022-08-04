@@ -1,9 +1,10 @@
 import pandas as pd
+from pathlib import Path
 
 def cleaningData():
-    inter = pd.read_csv('/home/lucasfersantos/Documentos/OT255-Python/files/raw/universidad_interamericana.csv')
-    pampa = pd.read_csv('/home/lucasfersantos/Documentos/OT255-Python/files/raw/universidad_lapampa.csv')
-    cod_postal = pd.read_csv('/home/lucasfersantos/Documentos/OT255-Python/files/raw/codigos_postales.csv')
+    inter = pd.read_csv(Path(__file__).parent.parent.parent / "files" / "raw" /"universidad_interamericana.csv")
+    pampa = pd.read_csv(Path(__file__).parent.parent.parent / "files" / "raw" /"universidad_lapampa.csv")
+    cod_postal = pd.read_csv(Path(__file__).parent.parent.parent / "files" / "raw" /"codigos_postales.csv")
 
     cod_postal = cod_postal.rename(columns={'codigo_postal': 'postal_code', 'localidad': 'location'})
     cod_postal['postal_code'] = cod_postal['postal_code'].astype('str')
@@ -22,7 +23,7 @@ def cleaningData():
 
     cols = list(dfinter.columns)
     dfinter = dfinter[cols[0:7]+[cols[-1]]+cols[7:9]]
-    dfinter.to_csv('/home/lucasfersantos/Documentos/OT255-Python//files/modified/universidad_interamericana.txt')
+    dfinter.to_csv(Path(__file__).parent.parent.parent/ "files"/ "modified"/"universidad_interamericana.txt")
 
     pampa['university'] = pampa['university'].str.lower()
     pampa['carrer'] = pampa['carrer'].str.lower()
@@ -35,6 +36,5 @@ def cleaningData():
     cols2 = list(dfpampa.columns)
     dfpampa = dfpampa.drop(['Unnamed: 0'], axis=1)
     dfpampa = dfpampa[cols2[1:9]+[cols2[-1]]+cols2[9:10]]
-    dfpampa.to_csv('/home/lucasfersantos/Documentos/OT255-Python//files/modified/universidad_lapampa.txt')
+    dfpampa.to_csv(Path(__file__).parent.parent.parent/ "files"/ "modified"/"universidad_lapampa.txt")
 
-cleaningData()
