@@ -13,12 +13,7 @@ end as last_name,
 sexo as gender,
 extract (year from age (now()::date,fecha_nacimiento::date))   as age,
 fc.codigo_postal as postal_code,
-disloc.localidad as location,
 correo_electronico as email
 from flores_comahue fc
-join (
-select * from localidad loc
-) disloc
-on disloc.codigo_postal = cast(fc.codigo_postal as integer)
 where fc.universidad = 'UNIV. NACIONAL DEL COMAHUE'
 and fecha_de_inscripcion::date between '2020-09-01' and '2021-02-01'

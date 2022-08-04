@@ -1,11 +1,14 @@
 """DAG created for processing data from postgres using pandas and loading it to Amazon S3"""
 import airflow
+import os
 import logging
 from datetime import datetime
+from dotenv import load_dotenv
 from airflow.operators import python_operator
 from airflow.utils.task_group import TaskGroup
-from airflow.models import Variable
-from airflow.providers.postgres.operators.postgres import PostgresOperator
+from src.py_functions import queryDatabase
+from src.py_functions import pandas_comahue
+from src.py_functions import pandas_salvador
 from airflow.providers.amazon.aws.operators.s3 import S3CreateObjectOperator
 
 # Logger configuration
@@ -18,19 +21,16 @@ logging.basicConfig(
     ]
 )
 
-postgres_conn_id = Variable.get('postgres_conn_id')
-s3_bucket = Variable.get('amazon_bucket')
-s3_key = Variable.get('amazon_key')
+# Loading variables from dotenv
+load_dotenv()
 
-
-def postgres():
-    """Python function to extract queries"""
-    pass
-
-
-def pandas_processing():
-    """Python function for pandas processing"""
-    pass
+postgres_conn_id = os.getenv('postgres_conn_id')
+s3_bucket = os.getenv('s3_bucket')
+s3_key = os.getenv('s3_key')
+path_c = os.getenv('path_c')
+path_s = os.getenv('path_s')
+auth = os.getenv('auth')
+destFolder = os.getenv('destFolder')
 
 logging.info('DAG para univ del Salvador y Comahue')
 with airflow.DAG(
@@ -39,39 +39,28 @@ with airflow.DAG(
         schedule_interval='@hourly',
         start_date=datetime(2022, 7, 17)
 ) as dag:
-
-    logging.info('Extracting sql archives...')
+    logging.info('Querying database...')
     # Here we extract sql archives for further use
     extract_sql = python_operator.PythonOperator(
-        task_id='extract_sql',
-        python_callable=postgres
+        task_id='query_database',
+        python_callable=queryDatabase,
+        retries=5
     )
-
-    logging.info('Performing queries...')
-    # Here we perform the queries
-    with TaskGroup(group_id='queries') as queries:
-        run_queries = PostgresOperator(
-            task_id='run_salvador',
-            postgres_conn_id=postgres_conn_id,
-            sql='path to sql',
-            retries = 5
-        )
-
-        run_queries_2 = PostgresOperator(
-            task_id='run_comahue',
-            postgres_conn_id=postgres_conn_id,
-            sql='path to sql',
-            retries = 5
-        )
-
-        run_queries >> run_queries_2
 
     logging.info('Processing with pandas...')
-    # Python processing with pandas
-    pandas_processing = python_operator.PythonOperator(
-        task_id='pandas',
-        python_callable=pandas_processing()
-    )
+    # Here we perform the queries
+    with TaskGroup(group_id='queries') as pandas_processing:
+        pandas_processing_comahue = python_operator.PythonOperator(
+            task_id='pandas_comahue',
+            python_callable=pandas_comahue
+        )
+
+        pandas_processing_salvador = python_operator.PythonOperator(
+            task_id='pandas_salvador',
+            python_callable=pandas_salvador
+        )
+
+        pandas_processing_comahue >> pandas_processing_salvador
 
     logging.info('Storing results...')
     # Here we store our processed data in amazon aws
@@ -80,7 +69,7 @@ with airflow.DAG(
         s3_bucket=s3_bucket,
         s3_key=s3_key,
         replace=True,
-        retries = 5
+        retries=5
     )
 
-    extract_sql >> queries >> pandas_processing >> aws_bucket
+    extract_sql >> pandas_processing >> aws_bucket
