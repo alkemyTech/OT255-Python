@@ -1,6 +1,7 @@
 from airflow.hooks.postgres_hook import PostgresHook
 import pandas as pd
 import os
+from pathlib import Path
 
 def uInter():
     pg_hook = PostgresHook(postgre_conn_id='postgre_sql_univ')
