@@ -119,7 +119,9 @@ def process_univ(univ):
         ]
     ]
 
+    new_file_name = f"g255_{univ_name}.csv"
+
     # - export resulting dataframe -
-    df_univ.to_csv(modified_path / "".join([file_name, ".csv"]), index=False)
+    df_univ.to_csv(modified_path / new_file_name, index=False)
 
     print("Query task finished")
