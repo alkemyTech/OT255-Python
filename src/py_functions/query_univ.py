@@ -36,7 +36,7 @@ def query_univ(univ):
 
     # -- SCRIPT --
     # read the sql script into a local variable.
-    query = open(f"./include/sql/query_{univ_name}.sql", "r")
+    query = open(f"{str(Path.cwd())}/include/sql/query_{univ_name}.sql", "r")
     # create engine to make the connection with the database.
     engine = create_engine(
         f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
