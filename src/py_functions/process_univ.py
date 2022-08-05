@@ -1,47 +1,17 @@
-<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
-<<<<<<< HEAD
-=======
->>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
 def process_univ(univ):
     import os
     import shelve
     from pathlib import Path
-<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
 
     import pandas as pd
     from pandas.api.types import is_string_dtype
 
-=======
-import os
-import shelve
-import sys
-from pathlib import Path
-=======
->>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
-
-    import pandas as pd
-    from pandas.api.types import is_string_dtype
-
-<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
-
-def main(univ: str):
->>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
-=======
->>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
     assert isinstance(univ, str), "University acronym must be string type."
 
     # -- FUNCTIONS --
     # change column dtype for columns present in the current dataframe
     def column_dtype_changer(df):
-<<<<<<< HEAD
-<<<<<<< HEAD
         dtype_dict = {
-=======
-        dtype_Dict = {
->>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
-=======
-        dtype_dict = {
->>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
             "university": str,
             "career": str,
             "inscription_date": str,
@@ -55,23 +25,13 @@ def main(univ: str):
         }
 
         for column in df:
-<<<<<<< HEAD
-<<<<<<< HEAD
             df[column] = df[column].apply(dtype_dict[column])
-=======
-            df[column] = df[column].apply(dtype_Dict[column])
->>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
-=======
-            df[column] = df[column].apply(dtype_dict[column])
->>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
         return df
 
     # change format for columns with str dtype in the current dataframe
     def string_column_formatter(df):
         for column in df:
             if is_string_dtype(df[column]):
-<<<<<<< HEAD
-<<<<<<< HEAD
                 # delete hyphens except in 'inscription_date' column
                 if column != "inscription_date":
                     df[column].replace("-", " ", regex=True, inplace=True)
@@ -81,27 +41,6 @@ def main(univ: str):
         return df
 
     # -- INITIAL CONFIG --
-=======
-                df[column] = df[column].map(border_blank_deleter)
-                df[column] = df[column].map(str.lower)
-=======
->>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
-                # delete hyphens except in 'inscription_date' column
-                if column != "inscription_date":
-                    df[column].replace("-", " ", regex=True, inplace=True)
-                # format string columns to match expected output
-                df[column] = df[column].map(str.strip)
-                df[column] = df[column].map(str.lower)
-        return df
-
-    # -- INITIAL CONFIG --
-<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
-    # set the repository main folder as cwd
-    os.chdir(Path(sys.path[0]) / "..")
-
->>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
-=======
->>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
     # set the name of the university as a variable to simplify code reuse.
     univ_name = univ
     # set the origin and destination paths as a variable to simplify code reuse.
@@ -114,7 +53,7 @@ def main(univ: str):
 
     # -- SCRIPT --
     # load file name of the last file with shelve module.
-    shelf_file = shelve.open(f"{raw_path}/../temp/last_file")
+    shelf_file = shelve.open(f"{raw_path}/../temp/last_file_{univ_name}")
     file_name = shelf_file[f"{univ_name}_filename"]
     shelf_file.close()
 
@@ -134,18 +73,8 @@ def main(univ: str):
     url = "https://drive.google.com/uc?id=" + url.split("/")[-2]
     df_location = pd.read_csv(url, index_col=False)
     # rename columns to simplify future merging with university dataframe.
-<<<<<<< HEAD
-<<<<<<< HEAD
     rename_dict = {"codigo_postal": "postal_code", "localidad": "location"}
     df_location = df_location.rename(columns=rename_dict)
-=======
-    rename_Dict = {"codigo_postal": "postal_code", "localidad": "location"}
-    df_location = df_location.rename(columns=rename_Dict)
->>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
-=======
-    rename_dict = {"codigo_postal": "postal_code", "localidad": "location"}
-    df_location = df_location.rename(columns=rename_dict)
->>>>>>> 6c9d3f1 (UC-UBA merge with origin repository)
     # change columns dtype to match expected output.
     column_dtype_changer(df_location)
     # format columns with string dtype to match expected output.
@@ -190,17 +119,9 @@ def main(univ: str):
         ]
     ]
 
+    new_file_name = f"g255_{univ_name}.csv"
+
     # - export resulting dataframe -
-    df_univ.to_csv(modified_path / "".join([file_name, ".csv"]), index=False)
+    df_univ.to_csv(modified_path / new_file_name, index=False)
 
-<<<<<<< HEAD:Airflow/src/py_functions/process_univ.py
-<<<<<<< HEAD
     print("Query task finished")
-=======
-
-if __name__ == "__main__":
-    main()
->>>>>>> ccb5a7c (UC-UBA combine tasks for each university in one script)
-=======
-    print("Query task finished")
->>>>>>> 9a2c7c5 (UC-UBA fix dags and callables for both univerisities: working):src/py_functions/process_univ.py
