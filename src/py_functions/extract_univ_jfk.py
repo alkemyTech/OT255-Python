@@ -22,10 +22,5 @@ def extraer_univ_jfk():
         comando = archivo.read()
     data = pd.read_sql_query(comando, conn)
 
-    ruta_csv = (
-        Path(__file__).parent.parent.parent
-        / "files"
-        / "raw"
-        / "univ_jfk_raw.csv"
-    )
+    ruta_csv = Path.cwd() / "files" / "raw" / "univ_jfk_raw.csv"
     data.to_csv(ruta_csv, index=False)

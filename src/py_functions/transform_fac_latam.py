@@ -11,20 +11,10 @@ def transform_fac_latam():
         "Transformando los datos de la Facultad Latinoamericana de ciencias"
     )
     # Ruta de donde se va a extraer el archivo raw
-    ruta_fac_latam = (
-        Path(__file__).parent.parent.parent
-        / "files"
-        / "raw"
-        / "fac_latam_raw.csv"
-    )
+    ruta_fac_latam = Path.cwd() / "files" / "raw" / "fac_latam_raw.csv"
     # Ruta de donde se va a extraer el archivo que se usará para los codigos
     # postales
-    ruta_cp = (
-        Path(__file__).parent.parent.parent
-        / "files"
-        / "raw"
-        / "codigos_postales.csv"
-    )
+    ruta_cp = Path.cwd() / "files" / "raw" / "codigos_postales.csv"
     # Leo el csv con panda y se modifica columna por columna
     fac_latam = pd.read_csv(ruta_fac_latam)
     fac_latam["university"] = fac_latam["university"].str.lower()
@@ -77,11 +67,7 @@ def transform_fac_latam():
     # Elimino las columnas que ya no usaré
     fac_latam = fac_latam.drop(["codigo_postal", "localidad"], axis=1)
     # Defino la ruta donde guardaré la tabla modificada
-    ruta_csv = (
-        Path(__file__).parent.parent.parent
-        / "files"
-        / "modified"
-        / "g255_fac_latam.csv"
-    )
+    ruta_csv = Path.cwd() / "files" / "modified" / "g255_fac_latam.csv"
     # Guardo la tabla modificada
+
     fac_latam.to_csv(ruta_csv, index=False)

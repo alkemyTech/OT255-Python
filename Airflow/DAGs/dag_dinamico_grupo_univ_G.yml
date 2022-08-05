@@ -1,0 +1,55 @@
+default:
+  default_args:
+    owner: "default_owner"
+    start_date: 2022-08-04
+    end_date: 2022-10-10
+    retries: 1
+    retry_delay_sec: 300
+  concurrency: 1
+  max_active_runs: 1
+  dagrun_timeout_sec: 600
+  default_view: "tree"
+  orientation: "LR"
+  schedule_interval: "0 * * * *"
+  
+
+dag_facultad_latinoamericana_universidad_kennedy_dinamico:
+  default_args:
+    owner: "default_owner"
+    start_date: 2 days
+  description: "DAG Facultad Latinoamericana Universidad Kennedy"
+  schedule_interval: "0 * * * *"
+  tasks:
+    log_inicio_dag:
+      operator: airflow.operators.python.PythonOperator
+      python_callable_name: log_inicio
+      python_callable_file: /usr/local/airflow/dags/dag_facultad_latinoamericana_univ_kennedy.py
+    extraer_fac_latam_y_jfk:
+      operator: airflow.operators.python.PythonOperator
+      python_callable_name: extrac_fac_y_univ
+      python_callable_file: /usr/local/airflow/src/py_functions/extract_fac_latam_univ_jfk.py
+      retries: 5
+      retry_delay: 120 
+      dependencies: [log_inicio_dag]
+    transform:
+      operator: airflow.operators.python.PythonOperator
+      python_callable_name: transform_faclatam_ujfk
+      python_callable_file: /usr/local/airflow/src/py_functions/transform_fac_latam_univ_jfk.py
+      dependencies: [extraer_fac_latam_y_jfk]
+    Cargar_csv_latam_s3:
+      operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
+      filename: /usr/local/airflow/files/modified/g255_fac_latam.csv
+      dest_key: g255_fac_latam_factory.csv
+      dest_bucket: cohorte-julio-8972766c
+      aws_conn_id: g255 S3
+      replace: True
+      dependencies: [transform]
+    Cargar_csv_jfk_s3:
+      operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
+      filename: /usr/local/airflow/files/modified/g255_univ_jfk_.csv
+      dest_key: g255_univ_jfk_factory.csv
+      dest_bucket: cohorte-julio-8972766c
+      aws_conn_id: g255 S3
+      replace: True
+      dependencies: [transform]
+    

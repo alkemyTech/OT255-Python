@@ -26,10 +26,5 @@ def extraer_latinoam():
         comando = archivo.read()
     data = pd.read_sql_query(comando, conn)
 
-    ruta_csv = (
-        Path(__file__).parent.parent.parent
-        / "files"
-        / "raw"
-        / "fac_latam_raw.csv"
-    )
+    ruta_csv = Path.cwd() / "files" / "raw" / "fac_latam_raw.csv"
     data.to_csv(ruta_csv, index=False)
