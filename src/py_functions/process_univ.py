@@ -36,8 +36,7 @@ def process_univ(univ):
                 if column != "inscription_date":
                     df[column].replace("-", " ", regex=True, inplace=True)
                 # format string columns to match expected output
-                df[column] = df[column].map(str.strip)
-                df[column] = df[column].map(str.lower)
+                df[column] = df[column].str.lower().str.strip()
         return df
 
     # -- INITIAL CONFIG --
@@ -119,9 +118,8 @@ def process_univ(univ):
         ]
     ]
 
-    new_file_name = f"g255_{univ_name}.csv"
-
     # - export resulting dataframe -
+    new_file_name = f"g255_{univ_name}.csv"
     df_univ.to_csv(modified_path / new_file_name, index=False)
 
-    print("Query task finished")
+    print("Process task finished")
