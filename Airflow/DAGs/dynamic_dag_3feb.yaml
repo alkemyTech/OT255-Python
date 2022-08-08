@@ -1,0 +1,35 @@
+UTN_dynamic_dag:
+  default_args:
+    owner: 'GB'
+    start_date: 2022-08-09
+  schedule_interval: None
+  default_view: 'tree'  
+  orientation: 'LR'  
+  description: 'This dag process and store TRES DE FEBRERO db'
+
+  tasks:
+    t_export_data:
+      operator: airflow.operators.python.PythonOperator
+      python_callable_name: db_extract
+      python_callable_file: /usr/local/airflow/include/src/py_functions/callables.py
+      op_kwargs: 
+        university:utn
+      retries: 5
+
+    t_data_transform:
+      operator: airflow.operators.python.PythonOperator
+      python_callable_name: csvByLocation_to_txt_dag
+      python_callable_file: /usr/local/airflow/include/src/py_functions/callables.py
+      op_kwargs: 
+        university:utn
+      dependencies: [t_export_data]
+    
+    t_data_load:
+        operator: airflow.operators.python.LocalFilesystemToS3Operator
+        filename: /usr/local/airflow/files/modified/G255_3feb.txt
+        aws_conn_id: 's3_conn'
+        dest_key: 'G255_3feb.txt'
+        dest_bucket: 'cohorte-julio-8972766c'
+        replace: True
+        dependencies: [t_data_transform]
+    
