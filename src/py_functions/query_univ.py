@@ -56,7 +56,7 @@ def query_univ(univ):
     # write query result into a csv file inside the destination folder.
     df_query.to_csv(raw_path / "".join([file_name, ".csv"]), index=False)
     # save file name of the last file with shelve module.
-    shelf_file = shelve.open(f"{raw_path}/../temp/last_file")
+    shelf_file = shelve.open(f"{raw_path}/../temp/last_file_{univ_name}")
     shelf_file[f"{univ_name}_filename"] = file_name
     shelf_file.close()
 
