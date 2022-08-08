@@ -52,7 +52,7 @@ def process_univ(univ):
 
     # -- SCRIPT --
     # load file name of the last file with shelve module.
-    shelf_file = shelve.open(f"{raw_path}/../temp/last_file")
+    shelf_file = shelve.open(f"{raw_path}/../temp/last_file_{univ_name}")
     file_name = shelf_file[f"{univ_name}_filename"]
     shelf_file.close()
 

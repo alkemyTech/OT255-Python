@@ -2,7 +2,11 @@ default:
   default_args:
     owner: "admin"
     start_date: 2022-01-01
+<<<<<<< HEAD
     catchup: false
+=======
+    catchup: False
+>>>>>>> dynamic_dag_h
     retries: 0
   concurrency: 1
   max_active_runs: 1
@@ -32,7 +36,11 @@ din_dag_uba:
       dest_key: "g255__din_uba.csv"
       dest_bucket: "cohorte-julio-8972766c"
       aws_conn_id: "s3_alkemy"
+<<<<<<< HEAD
       replace: true
+=======
+      replace: True
+>>>>>>> dynamic_dag_h
       dependencies: [task_process_univ]
 
 din_dag_ucine:
@@ -57,5 +65,9 @@ din_dag_ucine:
       dest_key: "g255__din_ucine.csv"
       dest_bucket: "cohorte-julio-8972766c"
       aws_conn_id: "s3_alkemy"
+<<<<<<< HEAD
       replace: true
+=======
+      replace: True
+>>>>>>> dynamic_dag_h
       dependencies: [task_process_univ]
