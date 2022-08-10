@@ -5,7 +5,7 @@ UTN_dynamic_dag:
   schedule_interval: None
   default_view: 'tree'  
   orientation: 'LR'  
-  description: 'This dag process and store UTN db'
+  description: 'This dag process and store UNIVERSIDAD TECNOLOGICA NACIONAL db'
 
   tasks:
     t_export_data:
@@ -25,11 +25,11 @@ UTN_dynamic_dag:
       dependencies: [t_export_data]
     
     t_data_load:
-        operator: airflow.operators.python.LocalFilesystemToS3Operator
+        operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
         filename: /usr/local/airflow/files/modified/G255_utn.txt
-        aws_conn_id: 's3_conn'
-        dest_key: 'G255_utn.txt'
-        dest_bucket: 'cohorte-julio-8972766c'
+        aws_conn_id: s3_conn
+        dest_key: G255_utn.txt
+        dest_bucket: cohorte-julio-8972766c
         replace: True
         dependencies: [t_data_transform]
     
