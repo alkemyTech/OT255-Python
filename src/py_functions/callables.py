@@ -3,7 +3,7 @@ from pathlib import Path
 import pandas as pd
 import sqlalchemy as db
 
-import db_env
+from include.src.py_functions import db_env
 
 
 def db_connect():
