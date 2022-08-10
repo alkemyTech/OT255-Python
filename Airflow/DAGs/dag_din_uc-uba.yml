@@ -1,0 +1,61 @@
+default:
+  default_args:
+    owner: "admin"
+    start_date: 2022-01-01
+    catchup: False
+    retries: 0
+  concurrency: 1
+  max_active_runs: 1
+  default_view: "tree"
+  orientation: "LR"
+  schedule_interval: "0 * * * *"
+
+din_dag_uba:
+  description: "This is the DAG for 'Universidad Nacional de Buenos Aires'"
+  tasks:
+    task_query_univ:
+      operator: airflow.operators.python_operator.PythonOperator
+      python_callable_name: query_univ
+      python_callable_file: /usr/local/airflow/include/query_univ.py
+      op_args: ["uba"]
+      retries: 5
+      retry_delay: 120
+    task_process_univ:
+      operator: airflow.operators.python_operator.PythonOperator
+      python_callable_name: process_univ
+      python_callable_file: /usr/local/airflow/include/process_univ.py
+      op_args: ["uba"]
+      dependencies: [task_query_univ]
+    task_load_univ:
+      operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
+      filename: /usr/local/airflow/files/modified/g255_uba.csv
+      dest_key: "g255__din_uba.csv"
+      dest_bucket: "cohorte-julio-8972766c"
+      aws_conn_id: "s3_alkemy"
+      replace: True
+      dependencies: [task_process_univ]
+
+din_dag_ucine:
+  description: "This is the DAG for 'Universidad Nacional de Buenos Aires'"
+  tasks:
+    task_query_univ:
+      operator: airflow.operators.python_operator.PythonOperator
+      python_callable_name: query_univ
+      python_callable_file: /usr/local/airflow/include/query_univ.py
+      op_args: ["ucine"]
+      retries: 5
+      retry_delay: 120
+    task_process_univ:
+      operator: airflow.operators.python_operator.PythonOperator
+      python_callable_name: process_univ
+      python_callable_file: /usr/local/airflow/include/process_univ.py
+      op_args: ["ucine"]
+      dependencies: [task_query_univ]
+    task_load_univ:
+      operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
+      filename: /usr/local/airflow/files/modified/g255_ucine.csv
+      dest_key: "g255__din_ucine.csv"
+      dest_bucket: "cohorte-julio-8972766c"
+      aws_conn_id: "s3_alkemy"
+      replace: True
+      dependencies: [task_process_univ]

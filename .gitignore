@@ -5,3 +5,4 @@ src/.DS_Store
 venv
 *.csv
 *.txt
+files/temp
