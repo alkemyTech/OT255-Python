@@ -10,23 +10,23 @@ e_dynamic_dag:
       operator: airflow.operators.python.PythonOperator
       retries: 5
       python_callable_name: uInter
-      python_callable_file: /home/user/airflow/dags/src/py_functions/extraccionSQL.py
+      python_callable_file: /usr/local//airflow/dags/src/py_functions/extraccionSQL.py
       
     consultaSQL_pampa:
       operator: airflow.operators.python.PythonOperator
       python_callable_name: uPampa
-      python_callable_file: /home/user/airflow/dags/src/py_functions/extraccionSQL.py
+      python_callable_file: /usr/local//airflow/dags/src/py_functions/extraccionSQL.py
 
     cleaning_data:
       operator: airflow.operators.python.PythonOperator
       python_callable_name: cleaningData
-      python_callable_file: /home/user/airflow/dags/src/py_functions/clean_e.py
+      python_callable_file: /usr/local/airflow/dags/src/py_functions/clean_e.py
       dependencies: [consultaSQL_inter, consultaSQL_pampa]
 
     carga_inter:
       operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
       task_id: cargainter
-      filename: /home/user/airflow/dags/src/g255_universidad_interamericana.txt
+      filename: /usr/local/airflow/dags/src/g255_universidad_interamericana.txt
       aws_conn_id: s3_conn
       dest_key: g255_universidad_interamericana.txt
       dest_bucket: cohorte-julio-8972766c
@@ -37,7 +37,7 @@ e_dynamic_dag:
     carga_pampa:
       operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
       task_id: cargapmpa
-      filename: /home/user/airflow/dags/src/g255_universidad_lapampa.txt
+      filename: /usr/local/airflow/dags/src/g255_universidad_lapampa.txt
       aws_conn_id: s3_conn
       dest_key: g255_universidad_lapampa.txt
       dest_bucket: cohorte-julio-8972766c
