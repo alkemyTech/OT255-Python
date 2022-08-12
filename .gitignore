@@ -6,4 +6,5 @@ venv
 *.csv
 *.txt
 *.xml
+*.log
 files/temp
