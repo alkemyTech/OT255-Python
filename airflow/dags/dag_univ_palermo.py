@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.amazon.aws.transfers.local_to_s3 import \
+    LocalFilesystemToS3Operator
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(message)s", datefmt="%Y-%m-%d")
 
@@ -15,18 +17,7 @@ args = {
 dag = DAG("dag_univ_palermo", default_args=args)
 
 
-def extraer_datos_univ_palermo():
-    pass
-
-
-def transformar_datos_univ_palermo():
-    pass
-
-
-def cargar_datos_univ_palermo():
-    pass
-
-
+logging.info("Se extraen datos.")
 extraer_datos_univ_palermo = PythonOperator(
     task_id="extraer_datos",
     retries=5,
@@ -35,13 +26,25 @@ extraer_datos_univ_palermo = PythonOperator(
     dag=dag,
 )
 
+
+logging.info("Se transforman datos.")
 transformar_datos_univ_palermo = PythonOperator(
-    task_id="transformar_datos", python_callable=normalizar_y_escribir_datos_en_txt("univ_de_palermo"), dag=dag
+    task_id="transformar_datos",
+    python_callable=normalizar_y_escribir_datos_en_txt("univ_de_palermo"),
+    dag=dag,
 )
 
-cargar_datos_univ_palermo = PythonOperator(
-    task_id="cargar_datos", python_callable=cargar_datos_univ_palermo, dag=dag
+logging.info("Se cargan datos.")
+cargar_datos_univ_palermo = LocalFilesystemToS3Operator(
+    task_id="cargar_datos_UP",
+    filename=pathlib.Path.cwd() / "src" / "txt" / "univ_de_palermo.txt",
+    aws_conn_id="carga_to_S3",
+    dest_key=f"g255_UP.txt",
+    dest_bucket="cohorte-julio-8972766c",
+    replace=True,
+    dag=dag,
 )
+
 
 (
     extraer_datos_univ_palermo
