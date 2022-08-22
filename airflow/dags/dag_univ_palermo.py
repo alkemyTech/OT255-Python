@@ -31,12 +31,12 @@ extraer_datos_univ_palermo = PythonOperator(
     task_id="extraer_datos",
     retries=5,
     retry_delay=timedelta(minutes=1),
-    python_callable=extraer_datos_univ_palermo,
+    python_callable=extraer_y_escribir_datos_en_csv("univ_de_palermo"),
     dag=dag,
 )
 
 transformar_datos_univ_palermo = PythonOperator(
-    task_id="transformar_datos", python_callable=transformar_datos_univ_palermo, dag=dag
+    task_id="transformar_datos", python_callable=normalizar_y_escribir_datos_en_txt("univ_de_palermo"), dag=dag
 )
 
 cargar_datos_univ_palermo = PythonOperator(
