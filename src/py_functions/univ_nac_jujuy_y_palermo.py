@@ -25,7 +25,6 @@ def extraer_y_escribir_datos_en_csv(universidad):
 def normalizar_datos_de_universidad(universidad):
     ruta = pathlib.Path.cwd() / "src" / "csv" / (universidad + ".csv")
     df_uni = pandas.read_csv(ruta)
-    df_uni.age = df_uni.age.apply(int)
     df_uni = df_uni.applymap(quitar_guiones_y_espacios_sobrantes)
     df_uni.gender = df_uni.gender.apply(arreglar_valor_de_genero)
     return df_uni
@@ -40,7 +39,6 @@ def normalizar_datos_de_cod_postales():
         columns = {'codigo_postal' : 'postal_code' ,
                    'localidad' : 'location' }
     )
-    df_codigos_postales = df_codigos_postales.drop_duplicates()
     return df_codigos_postales
 
 
@@ -71,3 +69,5 @@ def arreglar_valor_de_genero(valor):
     else:
         valor = "male"
     return valor
+
+
