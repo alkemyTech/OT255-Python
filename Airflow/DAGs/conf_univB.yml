@@ -1,0 +1,55 @@
+# Configuration file for dynamic dag universidades B -comahue/salvador-
+default:
+  default_args:
+    owner: "admin"
+    start_date: 2022-01-01
+    catchup: False
+    retries: 0
+  concurrency: 1
+  max_active_runs: 1
+  default_view: "graph"
+  orientation: "LR"
+  schedule_interval: "@hourly"
+
+dagdin_salvador_comahue:
+  description: "DAG created for processing data from postgres using pandas and loading it to Amazon S3"
+  tasks:
+    query_comahue:
+      operator: airflow.operators.python_operator.PythonOperator
+      python_callable_name: querycomahue
+      python_callable_file: /home/lmoya/.local/lib/python3.8/site-packages/airflow/example_dags/src/py_functions/queryDatabase_comahue.py
+      retries: 5
+    query_salvador:
+      operator: airflow.operators.python_operator.PythonOperator
+      python_callable_name: querysalvador
+      python_callable_file: /home/lmoya/.local/lib/python3.8/site-packages/airflow/example_dags/src/py_functions/queryDatabase_salvador.py
+      retries: 5
+    pandas_processing_comahue:
+      operator: airflow.operators.python_operator.PythonOperator
+      python_callable_name: pandas_processing_comahue
+      python_callable_file: /home/lmoya/.local/lib/python3.8/site-packages/airflow/example_dags/src/py_functions/pandas_comahue.py
+      dependencies: [query_comahue]
+    pandas_processing_salvador:
+      operator: airflow.operators.python_operator.PythonOperator
+      python_callable_name: pandas_processing_salvador
+      python_callable_file: /home/lmoya/.local/lib/python3.8/site-packages/airflow/example_dags/src/py_functions/pandas_salvador.py
+      dependencies: [query_salvador]
+    aws_bucket_comahue:
+      operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
+      filename: /home/lmoya/.local/lib/python3.8/site-packages/airflow/example_dags/destFolder/universidad_del_comahue.txt
+      dest_key: 'G255_universidad_del_comahue.txt'
+      dest_bucket: "cohorte-julio-8972766c"
+      aws_conn_id: 's3'
+      replace: True
+      retries: 5
+      dependencies: [pandas_processing_comahue]
+    aws_bucket_salvador:
+      operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
+      filename: /home/lmoya/.local/lib/python3.8/site-packages/airflow/example_dags/destFolder/universidad_del_salvador.txt
+      dest_key: 'G255_universidad_del_salvador.txt'
+      dest_bucket: "cohorte-julio-8972766c"
+      aws_conn_id: 's3'
+      replace: True
+      retries: 5
+      dependencies: [pandas_processing_salvador]
+
