@@ -3,6 +3,7 @@ import logging.config
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 # import nltk
@@ -13,7 +14,10 @@ from nltk.corpus import stopwords
 
 os.chdir(sys.path[0])
 
-logging.config.fileConfig(os.path.join(Path.cwd(), "../log/logger_h.cfg"))
+logging.config.fileConfig(
+    os.path.join(Path.cwd(), "../log/logger_h.cfg"),
+    defaults={"filename": "mr_wcount_question.log"},
+)
 
 logger = logging.getLogger("logger_h")
 logger.disabled = True
@@ -47,7 +51,7 @@ class MRWordCountID1(MRJob):
         body_length = len(body)
         if body_length <= 256:
             needed_char = 257 - body_length
-            body = body + (" "*needed_char)
+            body = body + (" " * needed_char)
 
         if body:
             for i in range(2):
@@ -86,5 +90,8 @@ class MRWordCountID1(MRJob):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     MRWordCountID1.run()
-#    MRWordCountID2.run()
+    print()
+    print(f"Execution time: {round((time.time() - start_time), 2)} seconds")
+    print()

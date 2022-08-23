@@ -1,7 +1,23 @@
+import logging
+import logging.config
+import os
 import re
+import sys
+import time
+from pathlib import Path
 
 from mrjob.job import MRJob
 from mrjob.step import MRStep
+
+os.chdir(sys.path[0])
+
+logging.config.fileConfig(
+    os.path.join(Path.cwd(), "../log/logger_h.cfg"),
+    defaults={"filename": "mr_answer_time.log"},
+)
+
+logger = logging.getLogger("logger_h")
+logger.disabled = True
 
 
 class MRLessViewed(MRJob):
@@ -29,4 +45,8 @@ class MRLessViewed(MRJob):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     MRLessViewed.run()
+    print()
+    print(f"Execution time: {round((time.time() - start_time), 2)} seconds")
+    print()

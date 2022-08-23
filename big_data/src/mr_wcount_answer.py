@@ -3,6 +3,7 @@ import logging.config
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 # import nltk
@@ -13,7 +14,10 @@ from nltk.corpus import stopwords
 
 os.chdir(sys.path[0])
 
-logging.config.fileConfig(os.path.join(Path.cwd(), "../log/logger_h.cfg"))
+logging.config.fileConfig(
+    os.path.join(Path.cwd(), "../log/logger_h.cfg"),
+    defaults={"filename": "mr_wcount_answer.log"},
+)
 
 logger = logging.getLogger("logger_h")
 logger.disabled = True
@@ -36,24 +40,28 @@ class MRWordCountID1(MRJob):
         post_id = mo_id.group(1) if mo_id else None
         post_body = mo_body.group(1) if mo_body else None
 
-        logger.debug(f"post id:{post_id}")
+        # logger.debug(f"post id:{post_id}")
 
         if post_id == "2":
-            logger.debug(f"post body:{post_body}")
+            # logger.debug(f"post body:{post_body}")
             yield None, post_body
 
     def body_cleaner(self, _, body):
 
-        body_length = len(body)
-        if body_length <= 256:
-            needed_char = 257 - body_length
-            body = body + (" "*needed_char)
-
         if body:
             for i in range(2):
+                body_length = len(body)
+                if body_length <= 256:
+                    needed_char = 257 - body_length
+                    body = body + (" " * needed_char)
+                logger.debug(f"{body}")
                 logger.debug("Beautiful Soup will run now")
-                soup = BeautifulSoup(body, features="html.parser")
-                body = soup.get_text()
+                try:
+                    soup = BeautifulSoup(body, features="html.parser")
+                    body = soup.get_text()
+                except Exception as e:
+                    logger.error(f"{body}")
+                    logger.error(f"{e}")
                 logger.debug("Beautiful Soup worked fine")
 
             body = body.lower()
@@ -86,5 +94,8 @@ class MRWordCountID1(MRJob):
 
 
 if __name__ == "__main__":
+    start_time = time.time()
     MRWordCountID1.run()
-#    MRWordCountID2.run()
+    print()
+    print(f"Execution time: {round((time.time() - start_time), 2)} seconds")
+    print()
