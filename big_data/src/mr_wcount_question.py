@@ -26,12 +26,21 @@ logger.disabled = True
 class MRWordCountID1(MRJob):
     def steps(self):
         return [
-            MRStep(mapper=self.post_filter),
+            MRStep(mapper=self.tag_selector),
             MRStep(mapper=self.body_cleaner, reducer=self.word_counter),
             MRStep(mapper=self.dict_maker, reducer=self.top_filter),
         ]
 
-    def post_filter(self, _, line):
+    def tag_selector(self, _, line):
+        """Categorize each line by post type and yield body of answers
+
+        Input:
+        - raw line from xml file
+        Output:
+        - key: None
+        - value (answers): body in html format
+        """
+        # Use regex to get required xml tags
         regex_id = r'\sPostTypeId="(.*?)"'
         regex_body = r'\sBody="(.*?)"'
         mo_id = re.search(regex_id, line)
@@ -47,24 +56,36 @@ class MRWordCountID1(MRJob):
             yield None, post_body
 
     def body_cleaner(self, _, body):
+        """Remove html tags from body and split each word
 
-        body_length = len(body)
-        if body_length <= 256:
-            needed_char = 257 - body_length
-            body = body + (" " * needed_char)
-
+        Output:
+        - key: each word
+        - value: '1' value for each occurence
+        """
         if body:
+            # Parse body with beautiful soup twice because of html format
             for i in range(2):
+                # Add whitespaces if body lenght is shorter than 257 char to avoid bs4 warnings
+                body_length = len(body)
+                if body_length <= 256:
+                    needed_char = 257 - body_length
+                    body = body + (" " * needed_char)
+                logger.debug(f"{body}")
                 logger.debug("Beautiful Soup will run now")
-                soup = BeautifulSoup(body, features="html.parser")
-                body = soup.get_text()
+                # Log possible errors to find bodies causing them
+                try:
+                    soup = BeautifulSoup(body, features="html.parser")
+                    body = soup.get_text()
+                except Exception as e:
+                    logger.error(f"{body}")
+                    logger.error(f"{e}")
                 logger.debug("Beautiful Soup worked fine")
 
+            # Normalize body text by lowering case and deleting special char
             body = body.lower()
-
             body = re.sub("[^a-z]+", " ", body)
 
-            # nltk.download("stopwords")
+            # Use list of stopwords to filter irrelevant words for the analysis
             stop_words = set(stopwords.words("english"))
 
             for word in body.split():
@@ -73,13 +94,21 @@ class MRWordCountID1(MRJob):
                     yield word, 1
 
     def word_counter(self, key, value):
+        """Yield sum of occurences as value for each unique key"""
         yield key, sum(value)
 
     def dict_maker(self, key, value):
-        logger.debug(f"key is: {key} - value is: {value}")
+        """Yield None as key, and input in dictionary format as value"""
         yield None, {"word": key, "count": value}
 
     def top_filter(self, _, values):
+        """Sort posts by view count
+
+        output:
+        - key: each of 10 most appearing words
+        - value: number of occurences
+        """
+        # Sort words by occurences and keep required ones
         data = list(values)
         data.sort(key=lambda x: x.get("count"))
         data.reverse()

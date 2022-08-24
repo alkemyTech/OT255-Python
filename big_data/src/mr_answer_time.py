@@ -21,20 +21,31 @@ logger = logging.getLogger("logger_h")
 logger.disabled = True
 
 
-class MRLessViewed(MRJob):
+class MRAnswerTime(MRJob):
     def steps(self):
         return [
-            MRStep(mapper=self.post_filter, reducer=self.dict_concatenator),
+            MRStep(mapper=self.tag_selector, reducer=self.dict_concatenator),
             MRStep(mapper=self.score_filter, reducer=self.list_concatenator),
-            MRStep(mapper=self.df_joiner),
+            MRStep(mapper=self.diff_calculator),
         ]
 
-    def post_filter(self, _, line):
+    def tag_selector(self, _, line):
+        """Categorize each line by post type and yield required fields
+
+        Input:
+        - raw line from xml file
+        Output:
+        - key: post type ID (1 for questions, 2 for answers)
+        - value (questions): id, score, creation date, accepted answer
+        - value (answers): id, creation date
+        """
+        # Use regex to get required xml tags
         regex_type = r'\sPostTypeId="(.*?)"'
         mo_type = re.search(regex_type, line)
 
         post_type = mo_type.group(1) if mo_type else None
 
+        # Get id, score, creation date, accepted answer if line is a question
         if post_type == "1":
             regex_id = r'row Id="(.*?)"'
             regex_answer = r'\sAcceptedAnswerId="(.*?)"'
@@ -62,6 +73,7 @@ class MRLessViewed(MRJob):
                     "question_answer": question_answer,
                 }
 
+        # Get id, creation date if line is an answer
         if post_type == "2":
             regex_id = r'row Id="(.*?)"'
             regex_date = r'\sCreationDate="(.*?)"'
@@ -75,9 +87,18 @@ class MRLessViewed(MRJob):
             yield post_type, {"answer_id": answer_id, "answer_date": answer_date}
 
     def dict_concatenator(self, key, values):
+        """Yield same input, but values as lists"""
         yield key, list(values)
 
     def score_filter(self, key, values):
+        """Filter question posts by score
+
+        output:
+        - key: None
+        - value (questions): dict of 'type:dict' for posts in score position 300-400
+        - value (answer): dict of 'type:dict' from input
+        """
+        # Sort questions by score and keep required ones
         if key == "1":
             values.sort(key=lambda x: x.get("question_score"), reverse=True)
             values = values[300:400]
@@ -85,23 +106,35 @@ class MRLessViewed(MRJob):
                 logger.debug(f"{i}: {value}")
             yield None, {"key": key, "values": values}
 
+        # Keep every answer
         if key == "2":
             yield None, {"key": key, "values": values}
 
     def list_concatenator(self, _, values):
+        """Yield both inputs, inside one list"""
         yield None, list(values)
 
-    def df_joiner(self, _, values):
+    def diff_calculator(self, _, values):
+        """Calculate average accepted answer time for filtered posts
+
+        Convert both lists of dicts into pandas dataframes to join them
+        output:
+        - key: None
+        - value: Average accepted answer time for filtered posts
+        """
+        # Convert list of dict correponding to questions into a pandas df
         dict_questions = (
             values[0]["values"] if values[0]["key"] == "1" else values[1]["values"]
         )
         df_questions = pd.DataFrame(dict_questions)
 
+        # Convert list of dict correponding to answers into a pandas df
         dict_answers = (
             values[0]["values"] if values[0]["key"] == "2" else values[1]["values"]
         )
         df_answers = pd.DataFrame(dict_answers)
 
+        # Join boths dfs keeping answers corresponding to filtered questions
         df_total = pd.merge(
             df_questions,
             df_answers,
@@ -110,16 +143,13 @@ class MRLessViewed(MRJob):
             right_on="answer_id",
         )
 
+        # Calculate average difference between creation of question and answer
         df_total["question_date"] = pd.to_datetime(df_total["question_date"])
         df_total["answer_date"] = pd.to_datetime(df_total["answer_date"])
 
         df_total["date_diff"] = df_total["answer_date"] - df_total["question_date"]
 
-        # json_df = df_total.to_json(date_format="iso", orient="records")
-        # logger.debug(f"{json_df}")
-
         diff_mean = df_total["date_diff"].mean(numeric_only=False)
-        logger.debug(f"{diff_mean}")
 
         yield None, str(diff_mean)
 
@@ -129,7 +159,7 @@ class MRLessViewed(MRJob):
 
 if __name__ == "__main__":
     start_time = time.time()
-    MRLessViewed.run()
+    MRAnswerTime.run()
     print()
     print(f"Execution time: {round((time.time() - start_time), 2)} seconds")
     print()

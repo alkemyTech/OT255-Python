@@ -22,9 +22,18 @@ logger.disabled = True
 
 class MRLessViewed(MRJob):
     def steps(self):
-        return [MRStep(mapper=self.mapper, reducer=self.reducer)]
+        return [MRStep(mapper=self.tag_selector, reducer=self.top_filter)]
 
-    def mapper(self, _, line):
+    def tag_selector(self, _, line):
+        """Select from each line ID and View Count
+
+        Input:
+        - raw line from xml file
+        Output:
+        - key: None
+        - value (questions): dict of 'id:view count' from input
+        """
+        # Use regex to get required xml tags
         regex_id = r"\sId=(\S+)"
         regex_vcount = r"\sViewCount=(\S+)"
         mo_id = re.search(regex_id, line)
@@ -36,7 +45,14 @@ class MRLessViewed(MRJob):
         if post_vcount != 0:
             yield None, {"id": post_id, "count": post_vcount}
 
-    def reducer(self, _, values):
+    def top_filter(self, _, values):
+        """Sort posts by view count
+
+        output:
+        - key: each id of top 10 post less viewed
+        - value: view count
+        """
+        # Sort questions by view count and keep required ones
         data = list(values)
         data.sort(key=lambda x: x.get("count"))
         data = data[:10]
