@@ -1,0 +1,27 @@
+dag_dinamico_UNJ:
+  default_args:
+    owner: 'nadia'
+  default_view: 'tree'
+  description: 'dag dinámico - datos de UP'
+
+tasks:
+  extraer_datos:
+    operator: airflow.operators.python.PythonOperator
+    python_callable_name: extraer_y_escribir_datos_en_csv('univ_de_palermo')
+    python_callable_file: funciones_UNJ_UP.py
+    retries: 5
+
+  transformar_datos:
+    operator: airflow.operators.python.PythonOperator
+    python_callable_name: normalizar_y_escribir_datos_en_txt('univ_de_palermo')
+    python_callable_file: funciones_UNJ_UP.py
+    dependencies: [extraer_datos]
+
+  cargar_datos:
+    operator: airflow.providers.amazon.aws.transfers.local_to_s3.LocalFilesystemToS3Operator
+    filename: src/txt/univ_de_palermo.txt
+    aws_conn_id: s3_conn
+    dest_key: univ_de_palermo.txt
+    dest_bucket: cohorte-julio-8972766c
+    replace: True
+    dependencies: [transformar_datos]

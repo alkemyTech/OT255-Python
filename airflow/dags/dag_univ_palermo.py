@@ -22,7 +22,7 @@ extraer_datos_univ_palermo = PythonOperator(
     task_id="extraer_datos",
     retries=5,
     retry_delay=timedelta(minutes=1),
-    python_callable=extraer_y_escribir_datos_en_csv("univ_de_palermo"),
+    python_callable=extraer_y_escribir_datos_en_csv("univ_de_palermo.sql"),
     dag=dag,
 )
 
@@ -30,7 +30,7 @@ extraer_datos_univ_palermo = PythonOperator(
 logging.info("Se transforman datos.")
 transformar_datos_univ_palermo = PythonOperator(
     task_id="transformar_datos",
-    python_callable=normalizar_y_escribir_datos_en_txt("univ_de_palermo"),
+    python_callable=normalizar_y_escribir_datos_en_txt("univ_de_palermo.sql"),
     dag=dag,
 )
 
@@ -39,7 +39,7 @@ cargar_datos_univ_palermo = LocalFilesystemToS3Operator(
     task_id="cargar_datos_UP",
     filename=pathlib.Path.cwd() / "src" / "txt" / "univ_de_palermo.txt",
     aws_conn_id="carga_to_S3",
-    dest_key=f"g255_UP.txt",
+    dest_key="univ_de_palermo.txt",
     dest_bucket="cohorte-julio-8972766c",
     replace=True,
     dag=dag,
