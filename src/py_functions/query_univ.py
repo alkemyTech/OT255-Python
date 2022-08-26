@@ -9,7 +9,7 @@ def query_univ(univ):
     from sqlalchemy import create_engine
 
     assert isinstance(univ, str), "University acronym must be string type."
-    
+
     # -- INITIAL CONFIG --
     # set the name of the university as a variable to simplify code reuse.
     univ_name = univ

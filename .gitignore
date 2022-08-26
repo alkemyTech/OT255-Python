@@ -7,4 +7,5 @@ venv
 *.txt
 *.xml
 *.log
+*.jpg
 files/temp

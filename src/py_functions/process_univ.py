@@ -11,6 +11,13 @@ def process_univ(univ):
     # -- FUNCTIONS --
     # change column dtype for columns present in the current dataframe
     def column_dtype_changer(df):
+        """
+        Function to change dtype of each column in the dataframe to
+        match expected output.
+
+        :param df: pandas dataframe
+        :return: pandas dataframe with new column dtypes
+        """
         dtype_dict = {
             "university": str,
             "career": str,
@@ -30,6 +37,15 @@ def process_univ(univ):
 
     # change format for columns with str dtype in the current dataframe
     def string_column_formatter(df):
+        """
+        Function to normalize columns with string dtype
+        - replace dashes with whitespaces
+        - lower the case
+        - delete whitespaces in start or end of values
+
+        :param df: pandas dataframe
+        :return: pandas dataframe with formatted strings
+        """
         for column in df:
             if is_string_dtype(df[column]):
                 # delete hyphens except in 'inscription_date' column
